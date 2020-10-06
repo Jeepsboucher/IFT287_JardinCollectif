@@ -1,5 +1,5 @@
 // Travail fait par :
-//   NomEquipier1 - Matricule
+//   Jean-Philippe Boucher - 19 125 046
 //   NomEquipier2 - Matricule
 
 package JardinCollectif;
