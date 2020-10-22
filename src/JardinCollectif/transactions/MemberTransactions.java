@@ -80,12 +80,15 @@ public class MemberTransactions {
       if (!memberRepository.exists(memberId)) {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
-
-      if (!memberRepository.isAdmin(memberId)) {
-        throw new IFT287Exception("Le membre soécifié est déjà administrateur.");
+      
+      Member toUpdate = memberRepository.retrieve(memberId);
+      if (toUpdate.isAdmin) {
+        throw new IFT287Exception("Le membre spécifié est déjà administrateur.");
       }
 
-      memberRepository.promoteToAdmin(memberId);
+      toUpdate.isAdmin = true;
+      memberRepository.update(toUpdate); 
+
       connexion.commit();
     } catch (Exception e) {
       connexion.rollback();
