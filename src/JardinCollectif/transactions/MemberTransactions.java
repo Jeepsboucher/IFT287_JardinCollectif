@@ -65,6 +65,10 @@ public class MemberTransactions {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
 
+      if (isRegisteredToRepository.isMemberRegisteredToALot(memberId)) {
+        throw new IFT287Exception("Le membre spécifié est le dernier membre d'un lot.");
+      }
+
       memberRepository.delete(memberId);
       connexion.commit();
     } catch (Exception e) {
@@ -159,11 +163,6 @@ public class MemberTransactions {
   }
 
   public List<Member> getMembers() throws SQLException, IFT287Exception {
-    try{
-      return memberRepository.retrieveAll();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
-    }
+    return memberRepository.retrieveAll();
   }
 }

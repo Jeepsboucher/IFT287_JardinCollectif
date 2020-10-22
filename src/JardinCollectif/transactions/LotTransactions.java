@@ -1,37 +1,87 @@
 package JardinCollectif.transactions;
 
-import Integer;
 import JardinCollectif.Connexion;
+import JardinCollectif.IFT287Exception;
+import JardinCollectif.model.IsSowedIn;
+import JardinCollectif.model.Lot;
 import JardinCollectif.repositories.IsSowedInRepository;
 import JardinCollectif.repositories.LotRepository;
-import String;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public class LotTransactions {
-  /* {src_lang=Java}*/
-
-
   private Connexion connexion;
 
   private LotRepository lotRepository;
-
   private IsSowedInRepository isSowedInRepository;
 
   public LotTransactions(Connexion connexion, LotRepository lotRepository, IsSowedInRepository isSowedInRepository) {
-    return null;
+    this.connexion = connexion;
+    this.lotRepository = lotRepository;
+    this.isSowedInRepository = isSowedInRepository;
   }
 
-  public void addLot(String lotName, Integer maxMembercount) {
+  public void addLot(String lotName, int maxMembercount) throws SQLException, IFT287Exception {
+    try {
+      if (lotName == null || lotName.isEmpty()) {
+        throw new IFT287Exception("Le lot doit avoir un nom.");
+      }
+
+      if (lotRepository.exists(lotName)) {
+        throw new IFT287Exception("Un lot ayant ce nom existe déjà.");
+      }
+
+      if (maxMembercount < 1) {
+        throw new IFT287Exception("Le lot doit pouvoir être assigné à au moins un membre.");
+      }
+
+      Lot newLot = new Lot(lotName, maxMembercount);
+      lotRepository.create(newLot);
+
+      connexion.commit();
+    } catch (Exception e) {
+      connexion.rollback();
+      throw e;
+    }
   }
 
-  public void deleteLot(String lotName) {
+  public void removeLot(String lotName) throws SQLException, IFT287Exception {
+    try {
+      if (lotName == null || lotName.isEmpty()) {
+        throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
+      }
+
+      if (!lotRepository.exists(lotName)) {
+        throw new IFT287Exception("Le lot spécifié n'existe pas.");
+      }
+
+      if (!isSowedInRepository.retrieveFromLot(lotName).isEmpty()) {
+        throw new IFT287Exception("Le lot spécifié contient encore des plantes.");
+      }
+
+      lotRepository.delete(lotName);
+
+      connexion.commit();
+    } catch (Exception e) {
+      connexion.rollback();
+      throw e;
+    }
   }
 
-  public List<Lot> getLots() {
-    return null;
+  public List<Lot> getLots() throws SQLException, IFT287Exception {
+    return lotRepository.retrieveAll();
   }
 
-  public List<IsSowedIn> getPlantsInLot(String lotName) {
-    return null;
-  }
+  public List<IsSowedIn> getPlantsInLot(String lotName) throws SQLException, IFT287Exception {
+    if (lotName == null || lotName.isEmpty()) {
+      throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
+    }
 
+    if (!lotRepository.exists(lotName)) {
+      throw new IFT287Exception("Le lot spécifié n'existe pas.");
+    }
+
+    return isSowedInRepository.retrieveFromLot(lotName);
+  }
 }
