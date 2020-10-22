@@ -1,5 +1,7 @@
 package JardinCollectif.model;
 
+import java.sql.Date;
+
 import JardinCollectif.annotations.Column;
 import JardinCollectif.annotations.Entity;
 
@@ -15,7 +17,7 @@ public class IsSowedIn {
   public int memberId;
 
   @Column
-  public int plantingDate;
+  public Date plantingDate;
 
   @Column
   public String plantName;
@@ -23,7 +25,7 @@ public class IsSowedIn {
   @Column
   public String lotName;
 
-  public IsSowedIn(int isSowedInId, int memberId, int plantingDate, String plantName, String lotName, int quantity) {
+  public IsSowedIn(int isSowedInId, int memberId, Date plantingDate, String plantName, String lotName, int quantity) {
     this.isSowedInId = isSowedInId;
     this.quantity = quantity;
     this.memberId = memberId;
