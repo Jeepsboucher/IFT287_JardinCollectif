@@ -14,13 +14,9 @@ public class PlantTransactions {
   private Connexion connexion;
 
   private PlantRepository plantRepository;
-
   private LotRepository lotRepository;
-
   private MemberRepository memberRepository;
-
   private IsSowedInRepository isSowedInRepository;
-
   private IsRegisteredToRepository isRegisteredToRepository;
 
   public PlantTransactions(Connexion connexion, PlantRepository plantRepository, LotRepository lotRepository, MemberRepository memberRepository, IsSowedInRepository isSowedInRepository, IsRegisteredToRepository isRegisteredToRepository) {

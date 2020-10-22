@@ -22,9 +22,7 @@ public class JardinCollectifCommandHandler {
   private final Connexion connexion;
 
   private final MemberTransactions memberTransactions;
-
   private final LotTransactions lotTransactions;
-
   private final PlantTransactions plantTransactions;
 
   protected JardinCollectifCommandHandler(Connexion connexion) {
@@ -39,7 +37,7 @@ public class JardinCollectifCommandHandler {
     memberTransactions = new MemberTransactions(connexion, memberRepository, lotRepository, isRegisteredToRepository);
     lotTransactions = new LotTransactions(connexion, lotRepository, isSowedInRepository);
     plantTransactions = new PlantTransactions(connexion, plantRepository, lotRepository, memberRepository,
-        isSowedInRepository);
+        isSowedInRepository, isRegisteredToRepository);
   }
 
   @Command("inscrireMembre")

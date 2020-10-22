@@ -15,9 +15,7 @@ public class MemberTransactions {
   private Connexion connexion;
 
   private MemberRepository memberRepository;
-
   private LotRepository lotRepository;
-
   private IsRegisteredToRepository isRegisteredToRepository;
 
   public MemberTransactions(Connexion connexion, MemberRepository memberRepository, LotRepository lotRepository,
