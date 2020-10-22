@@ -1,13 +1,13 @@
 package JardinCollectif.repositories;
 
+import java.sql.SQLException;
+
 import JardinCollectif.Connexion;
+import JardinCollectif.IFT287Exception;
+import JardinCollectif.model.Member;
 
-public class MemberRepository extends Repository {
-  /* {src_lang=Java}*/
-
-
-  public MemberRepository(Connexion connexion) {
-    return null;
+public class MemberRepository extends Repository<Member> {
+  public MemberRepository(Connexion connexion) throws ClassNotFoundException, SQLException, IFT287Exception {
+    super(connexion);
   }
-
 }

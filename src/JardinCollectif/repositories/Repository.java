@@ -1,5 +1,6 @@
 package JardinCollectif.repositories;
 
+import JardinCollectif.Connexion;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.annotations.Initializer;
 import JardinCollectif.repositories.helpers.ColumnHelper;
@@ -26,7 +27,7 @@ public abstract class Repository<T> extends GenericHelper<T> {
   private final PreparedStatement existsStatement;
   private final TableHelper tableHelper;
 
-  public Repository(Connection connection) throws SQLException, ClassNotFoundException, IFT287Exception {
+  public Repository(Connexion connexion) throws SQLException, ClassNotFoundException, IFT287Exception {
     tableHelper = new TableHelper(getGenericType());
 
     String tableName = tableHelper.getTableName();
@@ -45,17 +46,17 @@ public abstract class Repository<T> extends GenericHelper<T> {
     String setValues = tableHelper.getColumns().stream().filter(columnHelper -> !columnHelper.isPrimary())
             .map(column -> column.getName()).collect(Collectors.joining("=?,", "", "=?"));
 
-    createStatement = connection
+    createStatement = connexion.getConnection()
             .prepareStatement("INSERT INTO " + tableName + "(" + createColumnsNames + ") VALUES (" + createValues + ");");
-    retrieveStatement = connection
+    retrieveStatement = connexion.getConnection()
             .prepareStatement("SELECT " + columnsNames + " FROM " + tableName + " WHERE " + primaryKeyName + ";");
-    retrieveAllStatement = connection
+    retrieveAllStatement = connexion.getConnection()
             .prepareStatement("SELECT " + columnsNames + " FROM " + tableName + ";");
-    updateStatement = connection
+    updateStatement = connexion.getConnection()
             .prepareStatement("UPDATE " + tableName + " SET " + setValues + " WHERE " + primaryKeyName + ";");
-    deleteStatement = connection
+    deleteStatement = connexion.getConnection()
             .prepareStatement("DELETE FROM " + tableName + " WHERE " + primaryKeyName + ";");
-    existsStatement = connection
+    existsStatement = connexion.getConnection()
             .prepareStatement("SELECT COUNT(*) FROM " + tableName + " WHERE " + primaryKeyName + ";");
   }
 
