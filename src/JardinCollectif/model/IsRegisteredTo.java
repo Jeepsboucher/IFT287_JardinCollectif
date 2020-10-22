@@ -3,7 +3,7 @@ package JardinCollectif.model;
 import JardinCollectif.annotations.Column;
 import JardinCollectif.annotations.Entity;
 
-@Entity
+@Entity("RequestToJoin")
 public class IsRegisteredTo {
   @Column(primaryKey = true)
   public int memberId;
