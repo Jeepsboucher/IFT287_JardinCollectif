@@ -1,10 +1,10 @@
 package JardinCollectif.transactions;
 
 import Integer;
-import JardinCollectif.repositories.LotRepository;
-import JardinCollectif.repositories.IsSowedInRepository;
-import String;
 import JardinCollectif.Connexion;
+import JardinCollectif.repositories.IsSowedInRepository;
+import JardinCollectif.repositories.LotRepository;
+import String;
 
 public class LotTransactions {
   /* {src_lang=Java}*/
@@ -17,7 +17,7 @@ public class LotTransactions {
   private IsSowedInRepository isSowedInRepository;
 
   public LotTransactions(Connexion connexion, LotRepository lotRepository, IsSowedInRepository isSowedInRepository) {
-  return null;
+    return null;
   }
 
   public void addLot(String lotName, Integer maxMembercount) {
@@ -27,11 +27,11 @@ public class LotTransactions {
   }
 
   public List<Lot> getLots() {
-  return null;
+    return null;
   }
 
   public List<IsSowedIn> getPlantsInLot(String lotName) {
-  return null;
+    return null;
   }
 
 }

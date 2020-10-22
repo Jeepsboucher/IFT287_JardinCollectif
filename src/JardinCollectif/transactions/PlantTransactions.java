@@ -1,14 +1,11 @@
 package JardinCollectif.transactions;
 
 import Integer;
-import JardinCollectif.repositories.PlantRepository;
-import java.util.Date;
-import JardinCollectif.repositories.LotRepository;
-import JardinCollectif.repositories.IsSowedInRepository;
-import String;
-import JardinCollectif.repositories.MemberRepository;
-import JardinCollectif.repositories.IsRegisteredToRepository;
 import JardinCollectif.Connexion;
+import JardinCollectif.repositories.*;
+import String;
+
+import java.util.Date;
 
 public class PlantTransactions {
   /* {src_lang=Java}*/
@@ -26,6 +23,10 @@ public class PlantTransactions {
 
   private IsRegisteredToRepository isRegisteredToRepository;
 
+  public PlantTransactions(Connexion connexion, PlantRepository plantRepository, LotRepository lotRepository, MemberRepository memberRepository, IsSowedInRepository isSowedInRepository, isRegisteredToRepositiory) {
+    return null;
+  }
+
   public void addPlant(String plantName, Integer cultivationTime) {
   }
 
@@ -39,11 +40,7 @@ public class PlantTransactions {
   }
 
   public List<Plant> getPlants() {
-  return null;
-  }
-
-  public PlantTransactions(Connexion connexion, PlantRepository plantRepository, LotRepository lotRepository, MemberRepository memberRepository, IsSowedInRepository isSowedInRepository,  isRegisteredToRepositiory) {
-  return null;
+    return null;
   }
 
 }

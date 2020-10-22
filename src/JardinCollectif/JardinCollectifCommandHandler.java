@@ -3,9 +3,10 @@ package JardinCollectif;
 import Integer;
 import JardinCollectif.transactions.LotTransactions;
 import JardinCollectif.transactions.MemberTransactions;
-import java.util.Date;
-import String;
 import JardinCollectif.transactions.PlantTransactions;
+import String;
+
+import java.util.Date;
 
 public class JardinCollectifCommandHandler {
   /* {src_lang=Java}*/
@@ -20,7 +21,7 @@ public class JardinCollectifCommandHandler {
   private final PlantTransactions plantTransactions;
 
   protected JardinCollectifCommandHandler(Connexion connexion) {
-  return null;
+    return null;
   }
 
   private void addMember(Integer memberId, String firstName, String lastName, String password) {

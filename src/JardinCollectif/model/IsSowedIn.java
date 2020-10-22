@@ -18,7 +18,7 @@ public class IsSowedIn {
   public String lotName;
 
   public IsSowedIn(Integer memberId, Integer plantingDate, String plantName, String lotName, Integer quantity) {
-  return null;
+    return null;
   }
 
 }

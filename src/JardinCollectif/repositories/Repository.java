@@ -18,14 +18,14 @@ public abstract class Repository {
   private PreparedStatement existsStatement;
 
   protected Repository(Connexion connexion) {
-  return null;
+    return null;
   }
 
   public void Create(T toCreate) {
   }
 
   public T Retrieve(Object id) {
-  return null;
+    return null;
   }
 
   public void Update(T toUpdate) {
@@ -35,11 +35,11 @@ public abstract class Repository {
   }
 
   public Boolean Exists(Object id) {
-  return null;
+    return null;
   }
 
   protected T InstanciateEntity(ResultSet resultSet) {
-  return null;
+    return null;
   }
 
 }

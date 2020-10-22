@@ -12,7 +12,7 @@ public class Lot {
   public Integer maxMemberCount;
 
   public Lot(String lotName, Integer maxMembercount) {
-  return null;
+    return null;
   }
 
 }

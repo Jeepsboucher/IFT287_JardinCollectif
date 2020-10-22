@@ -1,8 +1,8 @@
 package JardinCollectif.model;
 
+import Boolean;
 import Integer;
 import String;
-import Boolean;
 
 public class Member {
   /* {src_lang=Java}*/
@@ -19,7 +19,7 @@ public class Member {
   public String password;
 
   public Member(Integer memberId, Boolean isAdmin, String firstName, String lastName, String password) {
-  return null;
+    return null;
   }
 
 }

@@ -7,7 +7,7 @@ public class LotRepository extends Repository {
 
 
   public LotRepository(Connexion connexion) {
-  return null;
+    return null;
   }
 
 }

@@ -7,7 +7,7 @@ public class IsRegisteredToRepository extends Repository {
 
 
   public IsRegisteredToRepository(Connexion connexion) {
-  return null;
+    return null;
   }
 
 }

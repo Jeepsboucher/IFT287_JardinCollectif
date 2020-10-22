@@ -1,8 +1,8 @@
 package JardinCollectif.model;
 
+import Boolean;
 import Integer;
 import String;
-import Boolean;
 
 public class IsRegisteredTo {
   /* {src_lang=Java}*/
@@ -15,7 +15,7 @@ public class IsRegisteredTo {
   public Boolean requestStatus;
 
   public IsRegisteredTo(Integer memberId, String lotName, Boolean requestStatus) {
-  return null;
+    return null;
   }
 
 }
