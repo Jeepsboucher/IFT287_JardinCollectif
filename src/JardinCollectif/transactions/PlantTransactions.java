@@ -1,16 +1,16 @@
 package JardinCollectif.transactions;
 
-import Integer;
 import JardinCollectif.Connexion;
+import JardinCollectif.IFT287Exception;
 import JardinCollectif.repositories.*;
-import String;
-
-import java.util.Date;
+import JardinCollectif.model.Plant;
+import JardinCollectif.model.IsSowedIn;
+import java.sql.SQLException;
+import java.time.Instant;
+import java.sql.Date;
+import java.util.List;
 
 public class PlantTransactions {
-  /* {src_lang=Java}*/
-
-
   private Connexion connexion;
 
   private PlantRepository plantRepository;
@@ -23,24 +23,144 @@ public class PlantTransactions {
 
   private IsRegisteredToRepository isRegisteredToRepository;
 
-  public PlantTransactions(Connexion connexion, PlantRepository plantRepository, LotRepository lotRepository, MemberRepository memberRepository, IsSowedInRepository isSowedInRepository, isRegisteredToRepositiory) {
-    return null;
+  public PlantTransactions(Connexion connexion, PlantRepository plantRepository, LotRepository lotRepository, MemberRepository memberRepository, IsSowedInRepository isSowedInRepository, IsRegisteredToRepository isRegisteredToRepository) {
+    this.connexion = connexion;
+    this.plantRepository = plantRepository;
+    this.lotRepository = lotRepository;
+    this.memberRepository = memberRepository;
+    this.isSowedInRepository = isSowedInRepository;
+    this.isRegisteredToRepository = isRegisteredToRepository;
   }
 
-  public void addPlant(String plantName, Integer cultivationTime) {
+  public void addPlant(String plantName, int cultivationTime) throws SQLException, IFT287Exception {
+    try {
+      if(plantName == null || plantName.isEmpty()){
+        throw new IFT287Exception("La plante doit avoir un nom.");
+      }
+
+      if(plantRepository.exists(plantName)){
+        throw new IFT287Exception("Une plante ayant ce nom existe déjà.");
+      }
+
+      if(cultivationTime < 1) {
+        throw new IFT287Exception("Le temps de culture doit être d'au moins une journée.");
+      }
+
+      Plant newPlant = new Plant(plantName, cultivationTime);
+      plantRepository.create(newPlant);
+
+      connexion.commit();
+    } catch (Exception e) {
+      connexion.rollback();
+      throw e;
+    }
   }
 
-  public void removePlant(String plantName) {
+  public void removePlant(String plantName) throws SQLException, IFT287Exception {
+    try {
+      if(plantName == null || plantName.isEmpty()){
+        throw new IFT287Exception("La plante spécifié doit avoir un nom.");
+      }
+
+      if(!plantRepository.exists(plantName)){
+        throw new IFT287Exception("La plante spécifié n'existe pas.");
+      }
+
+      if(!isSowedInRepository.retrieveFromPlant(plantName).isEmpty()) {
+        throw new IFT287Exception("La plante spécifé est encore en culture.");
+      }
+
+      plantRepository.delete(plantName);
+      connexion.commit();
+    } catch (Exception e) {
+      connexion.rollback();
+      throw e;
+    }
   }
 
-  public void sowPlantInLot(String plantName, String lotName, Integer memberId, Integer quantity, Date plantingDate) {
+  public void sowPlantInLot(String plantName, String lotName, int memberId, int quantity, Date plantingDate) throws SQLException, IFT287Exception {
+    try {
+      if(plantName == null || plantName.isEmpty()){
+        throw new IFT287Exception("La plante spécifié doit avoir un nom.");
+      }
+
+      if(!plantRepository.exists(plantName)){
+        throw new IFT287Exception("La plante spécifié n'existe pas.");
+      }
+
+      if (lotName == null || lotName.isEmpty()) {
+        throw new IFT287Exception("Le lot doit avoir un nom.");
+      }
+
+      if (!lotRepository.exists(lotName)) {
+        throw new IFT287Exception("Le lot spécifié n'existe pas.");
+      }
+
+      if (!memberRepository.exists(memberId)) {
+        throw new IFT287Exception("Le membre spécifié n'existe pas.");
+      }
+
+      if(quantity < 1) {
+        throw new IFT287Exception("La quantité doit être d'au moins un.");
+      }
+
+      if (!isRegisteredToRepository.exists(memberId, lotName) || !isRegisteredToRepository.retrieve(memberId, lotName).requestStatus) {
+        throw new IFT287Exception("Le membre spécifié n'a pa accès au lot spécifié.");
+      }
+      
+      //Id will be ignored since it's auto-generated.
+      IsSowedIn newIsSowedIn = new IsSowedIn(-1, memberId, plantingDate, plantName, lotName, quantity);
+      isSowedInRepository.create(newIsSowedIn);
+
+      connexion.commit();
+    } catch (Exception e) {
+      connexion.rollback();
+      throw e;
+    }
   }
 
-  public void harvestPlant(String plantName, String lotName, Integer memberId) {
+  public void harvestPlant(String plantName, String lotName, int memberId) throws SQLException, IFT287Exception {
+    try {
+      if (plantName == null || plantName.isEmpty()) {
+        throw new IFT287Exception("La plante doit avoir un nom.");
+      }
+
+      if (!plantRepository.exists(plantName)) {
+        throw new IFT287Exception("La plante spécifiée n'existe pas.");
+      }
+
+      if (lotName == null || lotName.isEmpty()) {
+        throw new IFT287Exception("Le lot doit avoir un nom.");
+      }
+
+      if (!lotRepository.exists(lotName)) {
+        throw new IFT287Exception("Le lot spécifié n'existe pas.");
+      }
+      
+      if (!memberRepository.exists(memberId)) {
+        throw new IFT287Exception("Le membre spécifié n'existe pas.");
+      }
+
+      if (!isRegisteredToRepository.exists(memberId, lotName) || !isRegisteredToRepository.retrieve(memberId, lotName).requestStatus) {
+        throw new IFT287Exception("Le membre spécifié n'a pa accès au lot spécifié.");
+      }
+
+      Plant plant = plantRepository.retrieve(plantName);
+      Date plantationDate = new Date(java.util.Date.from(Instant.now().minusSeconds(plant.cultivationTime * 24 * 60 * 60)).getTime());
+
+      boolean hasHarvestedSomething = isSowedInRepository.deletePlantsOlderThanWithNameInLot(plantationDate, plantName, lotName) > 0;
+      if (!hasHarvestedSomething) {
+        throw new IFT287Exception("Aucun exemplaire de la plante spécifiée n'est prêt à être récolté.");
+      }
+
+      connexion.commit();
+    } catch (Exception e) {
+      connexion.rollback();
+      throw e;
+    }
   }
 
-  public List<Plant> getPlants() {
-    return null;
+  public List<Plant> getPlants() throws SQLException, IFT287Exception {
+    return plantRepository.retrieveAll();
   }
-
 }

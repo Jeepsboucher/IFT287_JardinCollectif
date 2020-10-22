@@ -19,5 +19,4 @@ public class IsRegisteredTo {
     this.lotName = lotName;
     this.requestStatus = requestStatus;
   }
-
 }
