@@ -1,18 +1,18 @@
 package JardinCollectif.model;
 
-import Integer;
-import String;
+import JardinCollectif.annotations.Column;
+import JardinCollectif.annotations.Entity;
 
+@Entity
 public class Plant {
-  /* {src_lang=Java}*/
-
-
+  @Column(primaryKey = true)
   public String plantName;
 
-  public Integer cultivationTime;
+  @Column
+  public int cultivationTime;
 
-  public Plant(String plantName, Integer cultivationTime) {
-    return null;
+  public Plant(String plantName, int cultivationTime) {
+    this.plantName = plantName;
+    this.cultivationTime = cultivationTime;
   }
-
 }

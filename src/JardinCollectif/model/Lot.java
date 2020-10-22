@@ -1,18 +1,18 @@
 package JardinCollectif.model;
 
-import Integer;
-import String;
+import JardinCollectif.annotations.Column;
+import JardinCollectif.annotations.Entity;
 
+@Entity
 public class Lot {
-  /* {src_lang=Java}*/
-
-
+  @Column(primaryKey = true)
   public String lotName;
 
-  public Integer maxMemberCount;
+  @Column
+  public int maxMemberCount;
 
-  public Lot(String lotName, Integer maxMembercount) {
-    return null;
+  public Lot(String lotName, int maxMembercount) {
+    this.lotName = lotName;
+    this.maxMemberCount = maxMembercount;
   }
-
 }

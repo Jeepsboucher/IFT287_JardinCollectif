@@ -1,21 +1,23 @@
 package JardinCollectif.model;
 
-import Boolean;
-import Integer;
-import String;
+import JardinCollectif.annotations.Column;
+import JardinCollectif.annotations.Entity;
 
+@Entity
 public class IsRegisteredTo {
-  /* {src_lang=Java}*/
+  @Column(primaryKey = true)
+  public int memberId;
 
-
-  public Integer memberId;
-
+  @Column(primaryKey = true)
   public String lotName;
 
-  public Boolean requestStatus;
+  @Column
+  public boolean requestStatus;
 
-  public IsRegisteredTo(Integer memberId, String lotName, Boolean requestStatus) {
-    return null;
+  public IsRegisteredTo(int memberId, String lotName, boolean requestStatus) {
+    this.memberId = memberId;
+    this.lotName = lotName;
+    this.requestStatus = requestStatus;
   }
 
 }

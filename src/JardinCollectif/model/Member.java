@@ -1,25 +1,30 @@
 package JardinCollectif.model;
 
-import Boolean;
-import Integer;
-import String;
+import JardinCollectif.annotations.Column;
+import JardinCollectif.annotations.Entity;
 
+@Entity
 public class Member {
-  /* {src_lang=Java}*/
+  @Column(primaryKey = true)
+  public int memberId;
 
+  @Column
+  public boolean isAdmin;
 
-  public Integer memberId;
-
-  public Boolean isAdmin;
-
+  @Column
   public String firstName;
 
+  @Column
   public String lastName;
 
+  @Column
   public String password;
 
-  public Member(Integer memberId, Boolean isAdmin, String firstName, String lastName, String password) {
-    return null;
+  public Member(int memberId, boolean isAdmin, String firstName, String lastName, String password) {
+    this.memberId = memberId;
+    this.isAdmin = isAdmin;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.password = password;
   }
-
 }
