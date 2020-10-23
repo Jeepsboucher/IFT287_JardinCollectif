@@ -25,7 +25,7 @@ public class IsSowedIn {
   @Column
   public String lotName;
 
-  public IsSowedIn(int isSowedInId, int memberId, Date plantingDate, String plantName, String lotName, int quantity) {
+  public IsSowedIn(int isSowedInId, int quantity, Date plantingDate, int memberId, String lotName, String plantName) {
     this.isSowedInId = isSowedInId;
     this.quantity = quantity;
     this.memberId = memberId;

@@ -17,10 +17,10 @@ public class MemberRepository extends Repository<Member> {
     super(connexion);
 
     retrieveMembersInLotStatement = connexion.getConnection()
-            .prepareStatement("SELECT Member.* FROM Member " +
+            .prepareStatement("SELECT Member.memberId, Member.isAdmin, Member.firstName, Member.lastName, Member.password FROM Member " +
                     "INNER JOIN RequestToJoin ON Member.memberId = RequestToJoin.memberId " +
                     "INNER JOIN Lot ON Lot.lotName = RequestToJoin.lotName " +
-                    "WHERE RequestToJoin.requestStatus = true AND lotName = ?");
+                    "WHERE RequestToJoin.requestStatus = TRUE AND Lot.lotName = ?");
   }
 
   public List<Member> retrieveMembersInLot(String lotName) throws SQLException, IFT287Exception {

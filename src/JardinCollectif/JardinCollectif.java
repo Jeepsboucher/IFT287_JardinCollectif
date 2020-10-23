@@ -77,13 +77,7 @@ public class JardinCollectif {
    */
   static void executerTransaction(String transaction) throws Exception, IFT287Exception {
     try {
-      System.out.print(transaction);
-      // Decoupage de la transaction en mots
-      StringTokenizer tokenizer = new StringTokenizer(transaction, " ");
-      if (tokenizer.hasMoreTokens()) {
-        String command = tokenizer.nextToken();
-        commandHandler.handleCommand(command);
-      }
+      commandHandler.handleCommand(transaction);
     } catch (Exception e) {
       System.out.println(" " + e.toString());
       // Ce rollback est ici seulement pour vous aider et éviter des problèmes lors de

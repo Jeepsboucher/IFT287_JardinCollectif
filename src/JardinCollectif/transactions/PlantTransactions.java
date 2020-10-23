@@ -30,15 +30,15 @@ public class PlantTransactions {
 
   public void addPlant(String plantName, int cultivationTime) throws SQLException, IFT287Exception {
     try {
-      if(plantName == null || plantName.isEmpty()){
+      if (plantName == null || plantName.isEmpty()){
         throw new IFT287Exception("La plante doit avoir un nom.");
       }
 
-      if(plantRepository.exists(plantName)){
+      if (plantRepository.exists(plantName)){
         throw new IFT287Exception("Une plante ayant ce nom existe déjà.");
       }
 
-      if(cultivationTime < 1) {
+      if (cultivationTime < 1) {
         throw new IFT287Exception("Le temps de culture doit être d'au moins une journée.");
       }
 
@@ -54,15 +54,15 @@ public class PlantTransactions {
 
   public void removePlant(String plantName) throws SQLException, IFT287Exception {
     try {
-      if(plantName == null || plantName.isEmpty()){
+      if (plantName == null || plantName.isEmpty()){
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
       }
 
-      if(!plantRepository.exists(plantName)){
+      if (!plantRepository.exists(plantName)){
         throw new IFT287Exception("La plante spécifié n'existe pas.");
       }
 
-      if(!isSowedInRepository.retrieveFromPlant(plantName).isEmpty()) {
+      if (!isSowedInRepository.retrieveFromPlant(plantName).isEmpty()) {
         throw new IFT287Exception("La plante spécifé est encore en culture.");
       }
 
@@ -76,11 +76,11 @@ public class PlantTransactions {
 
   public void sowPlantInLot(String plantName, String lotName, int memberId, int quantity, Date plantingDate) throws SQLException, IFT287Exception {
     try {
-      if(plantName == null || plantName.isEmpty()){
+      if (plantName == null || plantName.isEmpty()){
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
       }
 
-      if(!plantRepository.exists(plantName)){
+      if (!plantRepository.exists(plantName)){
         throw new IFT287Exception("La plante spécifié n'existe pas.");
       }
 
@@ -96,7 +96,7 @@ public class PlantTransactions {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
 
-      if(quantity < 1) {
+      if (quantity < 1) {
         throw new IFT287Exception("La quantité doit être d'au moins un.");
       }
 
@@ -105,7 +105,7 @@ public class PlantTransactions {
       }
       
       //Id will be ignored since it's auto-generated.
-      IsSowedIn newIsSowedIn = new IsSowedIn(-1, memberId, plantingDate, plantName, lotName, quantity);
+      IsSowedIn newIsSowedIn = new IsSowedIn(-1, quantity, plantingDate, memberId, lotName, plantName);
       isSowedInRepository.create(newIsSowedIn);
 
       connexion.commit();

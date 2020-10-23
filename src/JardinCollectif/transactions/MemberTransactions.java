@@ -6,6 +6,7 @@ import java.util.List;
 import JardinCollectif.Connexion;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.IsRegisteredTo;
+import JardinCollectif.model.Lot;
 import JardinCollectif.model.Member;
 import JardinCollectif.repositories.IsRegisteredToRepository;
 import JardinCollectif.repositories.LotRepository;
@@ -114,6 +115,11 @@ public class MemberTransactions {
         throw new IFT287Exception("Le membre spécifié a déjà une requête pour rejoindre le lot spécifié.");
       }
 
+      Lot lot = lotRepository.retrieve(lotName);
+      if (isRegisteredToRepository.countMembershipInLot(lotName) == lot.maxMemberCount) {
+        throw new IFT287Exception("Nombre maximum de membre inscrit au lot atteint. Veuillez refuser les demandes en cours ou retirer des membres au lot.");
+      }
+
       IsRegisteredTo newIsRegisteredTo = new IsRegisteredTo(memberId, lotName, false);
       isRegisteredToRepository.create(newIsRegisteredTo);
 
@@ -154,7 +160,7 @@ public class MemberTransactions {
         throw new IFT287Exception("La requête pour rejoindre le lot spécifié n'existe pas.");
       }
 
-      isRegisteredToRepository.delete(lotName, memberId);
+      isRegisteredToRepository.delete(memberId, lotName);
 
       connexion.commit();
     } catch (Exception e) {

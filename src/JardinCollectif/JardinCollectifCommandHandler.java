@@ -36,73 +36,73 @@ public class JardinCollectifCommandHandler extends CommandHandler {
     IsSowedInRepository isSowedInRepository = new IsSowedInRepository(connexion);
 
     memberTransactions = new MemberTransactions(connexion, memberRepository, lotRepository, isRegisteredToRepository);
-    lotTransactions = new LotTransactions(connexion, lotRepository, isSowedInRepository);
+    lotTransactions = new LotTransactions(connexion, lotRepository, isSowedInRepository, isRegisteredToRepository);
     plantTransactions = new PlantTransactions(connexion, plantRepository, lotRepository, memberRepository,
         isSowedInRepository, isRegisteredToRepository);
   }
 
   @Command("inscrireMembre")
-  private void addMember(int memberId, String firstName, String lastName, String password) throws SQLException, IFT287Exception {
+  public void addMember(String firstName, String lastName, String password, int memberId) throws SQLException, IFT287Exception {
     memberTransactions.addMember(memberId, firstName, lastName, password);
   }
 
   @Command("supprimerMembre")
-  private void removeMember(int memberId) throws SQLException, IFT287Exception {
+  public void removeMember(int memberId) throws SQLException, IFT287Exception {
     memberTransactions.removeMember(memberId);
   }
 
   @Command("promouvoirAdministrateur")
-  private void promoteToAdmin(int memberId) throws SQLException, IFT287Exception {
+  public void promoteToAdmin(int memberId) throws SQLException, IFT287Exception {
     memberTransactions.promoteToAdmin(memberId);
   }
 
   @Command("rejoindreLot")
-  private void requestToJoinLot(int memberId, String lotName) throws SQLException, IFT287Exception {
+  public void requestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
     memberTransactions.requestToJoinLot(memberId, lotName);
   }
 
   @Command("accepterDemande")
-  private void acceptRequestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
+  public void acceptRequestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
     memberTransactions.acceptRequestToJoinLot(lotName, memberId);
   }
 
   @Command("refuserDemande")
-  private void denyRequestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
+  public void denyRequestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
     memberTransactions.denyRequestToJoinLot(lotName, memberId);
   }
 
   @Command("ajouterLot")
-  private void addLot(String lotName, int maxMembercount) throws SQLException, IFT287Exception {
+  public void addLot(String lotName, int maxMembercount) throws SQLException, IFT287Exception {
     lotTransactions.addLot(lotName, maxMembercount);
   }
 
   @Command("supprimerLot")
-  private void removeLot(String lotName) throws SQLException, IFT287Exception {
+  public void removeLot(String lotName) throws SQLException, IFT287Exception {
     lotTransactions.removeLot(lotName);
   }
 
   @Command("ajouterPlante")
-  private void addPlant(String plantName, int cultivationTime) throws SQLException, IFT287Exception {
+  public void addPlant(String plantName, int cultivationTime) throws SQLException, IFT287Exception {
     plantTransactions.addPlant(plantName, cultivationTime);
   }
 
   @Command("retirerPlante")
-  private void removePlant(String plantName) throws SQLException, IFT287Exception {
+  public void removePlant(String plantName) throws SQLException, IFT287Exception {
     plantTransactions.removePlant(plantName);
   }
 
   @Command("planterPlante")
-  private void sowPlantInLot(String plantName, String lotName, int memberId, int quantity, Date plantingDate) throws SQLException, IFT287Exception {
+  public void sowPlantInLot(String plantName, String lotName, int memberId, int quantity, Date plantingDate) throws SQLException, IFT287Exception {
     plantTransactions.sowPlantInLot(plantName, lotName, memberId, quantity, plantingDate);
   }
 
   @Command("recolterPlante")
-  private void harvestPlant(String plantName, String lotName, int memberId) throws SQLException, IFT287Exception {
+  public void harvestPlant(String plantName, String lotName, int memberId) throws SQLException, IFT287Exception {
     plantTransactions.harvestPlant(plantName, lotName, memberId);
   }
 
   @Command("afficherMembres")
-  private void displayMembers() throws SQLException, IFT287Exception {
+  public void displayMembers() throws SQLException, IFT287Exception {
     List<Member> members = memberTransactions.getMembers();
     for (Member member : members) {
       displayMember(member);
@@ -110,7 +110,7 @@ public class JardinCollectifCommandHandler extends CommandHandler {
   }
 
   @Command("afficherLots")
-  private void displayLots() throws SQLException, IFT287Exception {
+  public void displayLots() throws SQLException, IFT287Exception {
     List<Lot> lots = lotTransactions.getLots();
     for (Lot lot : lots) {
       System.out.println("Name : " + lot.lotName + " Max member count : " + lot.maxMemberCount);
@@ -126,7 +126,7 @@ public class JardinCollectifCommandHandler extends CommandHandler {
   }
 
   @Command("afficherPlantes")
-  private void displayPlants() throws SQLException, IFT287Exception {
+  public void displayPlants() throws SQLException, IFT287Exception {
     List<Plant> plants = plantTransactions.getPlants();
     for (Plant plant : plants) {
       int quantitySowed = plantTransactions.getQuantitySowed(plant.plantName);
@@ -135,7 +135,7 @@ public class JardinCollectifCommandHandler extends CommandHandler {
   }
 
   @Command("afficherPlantesLot")
-  private void displayPlantsInLot(String lotName) throws SQLException, IFT287Exception {
+  public void displayPlantsInLot(String lotName) throws SQLException, IFT287Exception {
     List<IsSowedIn> plants = plantTransactions.getPlantsInLot(lotName);
     for (IsSowedIn plant : plants) {
       Date harvestDate = plantTransactions.getHarvestDate(plant);
@@ -150,7 +150,7 @@ public class JardinCollectifCommandHandler extends CommandHandler {
   }
 
   @Command("quitter")
-  private void close() throws SQLException {
+  public void close() throws SQLException {
     connexion.fermer();
     System.exit(0);
   }

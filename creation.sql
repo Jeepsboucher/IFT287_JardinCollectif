@@ -18,8 +18,8 @@ CREATE TABLE Lot (
 
 CREATE TABLE RequestToJoin (
     requestStatus BOOLEAN DEFAULT FALSE NOT NULL,
-    memberId INT NOT NULL REFERENCES member(memberId),
-    lotName VARCHAR(50) NOT NULL REFERENCES lot(lotName),
+    memberId INT NOT NULL REFERENCES Member,
+    lotName VARCHAR(50) NOT NULL REFERENCES Lot,
     PRIMARY KEY (memberId, lotName)
 );
 
@@ -27,7 +27,7 @@ CREATE TABLE IsSowedIn (
     isSowedInId SERIAL PRIMARY KEY,
     quantity INT NOT NULL,
     plantingDate DATE NOT NULL,
-    memberId INT NOT NULL REFERENCES member(memberId),
-    lotName VARCHAR(50) NOT NULL REFERENCES lot(lotName),
-    plantName VARCHAR(50) NOT NULL REFERENCES plant(plantName)
+    memberId INT NOT NULL REFERENCES Member,
+    lotName VARCHAR(50) NOT NULL REFERENCES Lot,
+    plantName VARCHAR(50) NOT NULL REFERENCES Plant
 );
