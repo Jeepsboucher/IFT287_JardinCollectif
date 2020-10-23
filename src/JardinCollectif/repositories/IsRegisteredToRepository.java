@@ -9,9 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class IsRegisteredToRepository extends Repository<IsRegisteredTo> {
-  private PreparedStatement countMemberRegisteredToALotStatement;
-  private PreparedStatement countMembershipInLotStatement;
-  private PreparedStatement deleteRequestToJoinLotStatement;
+  private final PreparedStatement countMemberRegisteredToALotStatement;
+  private final PreparedStatement countMembershipInLotStatement;
+  private final PreparedStatement deleteRequestToJoinLotStatement;
 
   public IsRegisteredToRepository(Connexion connexion) throws ClassNotFoundException, SQLException, IFT287Exception {
     super(connexion);
@@ -23,7 +23,7 @@ public class IsRegisteredToRepository extends Repository<IsRegisteredTo> {
     deleteRequestToJoinLotStatement = connexion.getConnection()
             .prepareStatement("DELETE FROM RequestToJoin WHERE lotName = ?");
   }
-  
+
   public boolean isMemberRegisteredToALot(int memberId) throws SQLException {
     countMemberRegisteredToALotStatement.setInt(1, memberId);
     ResultSet result = countMemberRegisteredToALotStatement.executeQuery();

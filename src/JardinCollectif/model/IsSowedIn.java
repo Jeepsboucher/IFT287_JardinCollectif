@@ -1,9 +1,9 @@
 package JardinCollectif.model;
 
-import java.sql.Date;
-
 import JardinCollectif.annotations.Column;
 import JardinCollectif.annotations.Entity;
+
+import java.sql.Date;
 
 @Entity
 public class IsSowedIn {

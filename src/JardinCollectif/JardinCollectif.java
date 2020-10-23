@@ -6,7 +6,6 @@ package JardinCollectif;
 
 import java.io.*;
 import java.sql.*;
-import java.util.StringTokenizer;
 
 /**
  * Fichier de base pour le TP2 du cours IFT287
@@ -48,7 +47,7 @@ public class JardinCollectif {
   public static void main(String[] args) throws Exception {
     if (args.length < 4) {
       System.out.println(
-          "Usage: java JardinCollectif.JardinCollectif <serveur> <bd> <user> <password> [<fichier-transactions>]");
+              "Usage: java JardinCollectif.JardinCollectif <serveur> <bd> <user> <password> [<fichier-transactions>]");
       return;
     }
 
