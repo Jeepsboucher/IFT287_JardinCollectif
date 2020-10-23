@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.sql.Date;
 import java.util.List;
 
-public class JardinCollectifCommandHandler {
+public class JardinCollectifCommandHandler extends CommandHandler {
   private final Connexion connexion;
 
   private final MemberTransactions memberTransactions;
