@@ -166,4 +166,16 @@ public class MemberTransactions {
   public List<Member> getMembers() throws SQLException, IFT287Exception {
     return memberRepository.retrieveAll();
   }
+
+  public List<Member> getMembersInLot(String lotName) throws SQLException, IFT287Exception {
+    if (lotName == null || lotName.isEmpty()) {
+      throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
+    }
+
+    if (!lotRepository.exists(lotName)) {
+      throw new IFT287Exception("Le lot spécifié n'existe pas.");
+    }
+
+    return memberRepository.retrieveMembersInLot(lotName);
+  }
 }

@@ -15,7 +15,7 @@ public class IsSowedInRepository extends Repository<IsSowedIn> {
   private PreparedStatement retrieveFromPlantStatement;
   private PreparedStatement retrieveFromLotStatement;
   private PreparedStatement deletePlantsOlderThanWithNameInLotStatement;
-
+  private PreparedStatement quantitySowStatement;
   public IsSowedInRepository(Connexion connexion) throws ClassNotFoundException, SQLException, IFT287Exception {
     super(connexion);
     retrieveFromPlantStatement = connexion.getConnection()
@@ -24,6 +24,8 @@ public class IsSowedInRepository extends Repository<IsSowedIn> {
             .prepareStatement("SELECT * FROM IsSowedIn WHERE lotName = ?;");
     deletePlantsOlderThanWithNameInLotStatement = connexion.getConnection()
             .prepareStatement("DELETE FROM IsSowedIn WHERE plantingDate <= ? AND plantName = ? AND lotName = ?;");
+    quantitySowStatement = connexion.getConnection()
+            .prepareStatement("SELECT COUNT(quantity) FROM IsSowedIn WHERE plantName = ?;");
   }
 
   public List<IsSowedIn> retrieveFromPlant(String plantName) throws IFT287Exception, SQLException {
@@ -56,5 +58,13 @@ public class IsSowedInRepository extends Repository<IsSowedIn> {
     deletePlantsOlderThanWithNameInLotStatement.setString(3, lotName);
   
     return deletePlantsOlderThanWithNameInLotStatement.executeUpdate();
+  }
+
+  public int getQuantitySowed(String plantName) throws SQLException, IFT287Exception {
+    quantitySowStatement.setString(1, plantName);
+
+    ResultSet result = quantitySowStatement.executeQuery();
+    result.next();
+    return result.getInt(1);
   }
 }

@@ -129,7 +129,7 @@ public class JardinCollectif {
     static String lireTransaction(BufferedReader reader) throws IOException {
         return reader.readLine();
     }
-  }
+  
 
     /**
      * Verifie si la fin du traitement des transactions est atteinte.
@@ -138,7 +138,7 @@ public class JardinCollectif {
         // fin de fichier atteinte
         return (transaction == null || transaction.equals("quitter"));
     }
-  }
+  
 
     /** Lecture d'une chaine de caracteres de la transaction entree a l'ecran */
     static String readString(StringTokenizer tokenizer) throws Exception {

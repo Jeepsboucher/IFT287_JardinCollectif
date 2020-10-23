@@ -159,4 +159,43 @@ public class PlantTransactions {
   public List<Plant> getPlants() throws SQLException, IFT287Exception {
     return plantRepository.retrieveAll();
   }
+
+  public int getQuantitySowed(String plantName) throws SQLException, IFT287Exception {
+    if (plantName == null || plantName.isEmpty()) {
+      throw new IFT287Exception("La plante spécifité doit avoir un nom");
+    }
+
+    if (!plantRepository.exists(plantName)) {
+      throw new IFT287Exception("La plante spécifié n'existe pas");
+    }
+
+    return isSowedInRepository.getQuantitySowed(plantName);
+  }
+
+  public List<IsSowedIn> getPlantsInLot(String lotName) throws SQLException, IFT287Exception {
+    if (lotName == null || lotName.isEmpty()) {
+      throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
+    }
+
+    if (!lotRepository.exists(lotName)) {
+      throw new IFT287Exception("Le lot spécifié n'existe pas.");
+    }
+
+    return isSowedInRepository.retrieveFromLot(lotName);
+  }
+  
+  public Date getHarvestDate(IsSowedIn isSowedIn) throws IFT287Exception, SQLException {
+    if (isSowedIn.plantName == null || isSowedIn.plantName.isEmpty()) {
+      throw new IFT287Exception("La plante spécifié doit avoir un nom.");
+    }
+
+    if (!plantRepository.exists(isSowedIn.plantName)) {
+      throw new IFT287Exception("La plante spécifié n'existe pas.");
+    }
+
+    Plant plant = plantRepository.retrieve(isSowedIn.plantName);
+    Date harvestDate = Date.valueOf(isSowedIn.plantingDate.toLocalDate().plusDays(plant.cultivationTime));
+
+    return harvestDate;
+  }
 }
