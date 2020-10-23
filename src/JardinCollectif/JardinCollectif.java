@@ -1,6 +1,6 @@
 // Travail fait par :
 //   Jean-Philippe Boucher - 19 125 046
-//   NomEquipier2 - Matricule
+//   Charles Lachance - 17 093 137
 
 package JardinCollectif;
 
