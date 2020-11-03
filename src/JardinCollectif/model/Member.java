@@ -1,23 +1,19 @@
 package JardinCollectif.model;
 
-import JardinCollectif.annotations.Column;
-import JardinCollectif.annotations.Entity;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
 public class Member {
-  @Column(primaryKey = true)
+  @Id
   public int memberId;
 
-  @Column
   public boolean isAdmin;
 
-  @Column
   public String firstName;
 
-  @Column
   public String lastName;
 
-  @Column
   public String password;
 
   public Member(int memberId, boolean isAdmin, String firstName, String lastName, String password) {
