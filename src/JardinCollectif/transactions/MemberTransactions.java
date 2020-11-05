@@ -140,7 +140,7 @@ public class MemberTransactions {
     }
   }
 
-  public void acceptRequestToJoinLot(String lotName, Long memberId) throws SQLException, IFT287Exception {
+  public void acceptRequestToJoinLot(String lotName, long memberId) throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 
@@ -162,7 +162,7 @@ public class MemberTransactions {
     }
   }
 
-  public void denyRequestToJoinLot(String lotName, Long memberId) throws SQLException, IFT287Exception {
+  public void denyRequestToJoinLot(String lotName, long memberId) throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 
