@@ -59,7 +59,8 @@ public class LotTransactions {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
       }
 
-      if (!lotRepository.exists(lotName)) {
+      Lot toDelete = lotRepository.retrieve(lotName);
+      if (toDelete == null) {
         throw new IFT287Exception("Le lot spécifié n'existe pas.");
       }
 
@@ -68,7 +69,7 @@ public class LotTransactions {
       }
 
       isRegisteredToRepository.deleteRequestToJoinLot(lotName);
-      lotRepository.delete(lotName);
+      lotRepository.delete(toDelete);
 
       connexion.getTransaction().commit();
     } finally {

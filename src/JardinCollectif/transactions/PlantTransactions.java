@@ -62,7 +62,8 @@ public class PlantTransactions {
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
       }
 
-      if (!plantRepository.exists(plantName)){
+      Plant toDelete = plantRepository.retrieve(plantName);
+      if (toDelete == null){
         throw new IFT287Exception("La plante spécifié n'existe pas.");
       }
 
@@ -70,7 +71,8 @@ public class PlantTransactions {
         throw new IFT287Exception("La plante spécifé est encore en culture.");
       }
 
-      plantRepository.delete(plantName);
+      plantRepository.delete(toDelete);
+
       connexion.getTransaction().commit();
     } finally {
       if (connexion.getTransaction().isActive())

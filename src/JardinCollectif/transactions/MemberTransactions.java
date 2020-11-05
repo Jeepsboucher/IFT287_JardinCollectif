@@ -65,7 +65,8 @@ public class MemberTransactions {
     try {
       connexion.getTransaction().begin();
 
-      if (!memberRepository.exists(memberId)) {
+      Member toDelete = memberRepository.retrieve(memberId);
+      if (toDelete == null) {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
 
@@ -73,7 +74,7 @@ public class MemberTransactions {
         throw new IFT287Exception("Le membre spécifié est le dernier membre d'un lot.");
       }
 
-      memberRepository.delete(memberId);
+      memberRepository.delete(toDelete);
       connexion.getTransaction().commit();
     } finally {
       if (connexion.getTransaction().isActive())
@@ -95,7 +96,6 @@ public class MemberTransactions {
       }
 
       toUpdate.isAdmin = true;
-      memberRepository.update(toUpdate);
 
       connexion.getTransaction().commit();
     } finally {
@@ -148,12 +148,12 @@ public class MemberTransactions {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
       }
 
-      if (!isRegisteredToRepository.exists(memberId, lotName)) {
+      IsRegisteredTo toUpdate = isRegisteredToRepository.retrieve(memberId, lotName);
+      if (toUpdate == null) {
         throw new IFT287Exception("La requête pour rejoindre le lot spécifié n'existe pas.");
       }
 
-      IsRegisteredTo updatedIsRegisteredTo = new IsRegisteredTo(memberId, lotName, true);
-      isRegisteredToRepository.update(updatedIsRegisteredTo);
+      toUpdate.requestStatus = true;
 
       connexion.getTransaction().commit();
     } finally {
@@ -170,11 +170,12 @@ public class MemberTransactions {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
       }
 
-      if (!isRegisteredToRepository.exists(memberId, lotName)) {
+      IsRegisteredTo toDelete = isRegisteredToRepository.retrieve(memberId, lotName);
+      if (toDelete == null) {
         throw new IFT287Exception("La requête pour rejoindre le lot spécifié n'existe pas.");
       }
 
-      isRegisteredToRepository.delete(memberId, lotName);
+      isRegisteredToRepository.delete(toDelete);
 
       connexion.getTransaction().commit();
     } finally {
