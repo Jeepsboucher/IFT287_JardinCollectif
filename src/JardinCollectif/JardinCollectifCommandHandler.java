@@ -42,32 +42,32 @@ public class JardinCollectifCommandHandler extends CommandHandler {
   }
 
   @Command("inscrireMembre")
-  public void addMember(String firstName, String lastName, String password, int memberId) throws SQLException, IFT287Exception {
+  public void addMember(String firstName, String lastName, String password, long memberId) throws SQLException, IFT287Exception {
     memberTransactions.addMember(memberId, firstName, lastName, password);
   }
 
   @Command("supprimerMembre")
-  public void removeMember(int memberId) throws SQLException, IFT287Exception {
+  public void removeMember(long memberId) throws SQLException, IFT287Exception {
     memberTransactions.removeMember(memberId);
   }
 
   @Command("promouvoirAdministrateur")
-  public void promoteToAdmin(int memberId) throws SQLException, IFT287Exception {
+  public void promoteToAdmin(long memberId) throws SQLException, IFT287Exception {
     memberTransactions.promoteToAdmin(memberId);
   }
 
   @Command("rejoindreLot")
-  public void requestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
+  public void requestToJoinLot(String lotName, long memberId) throws SQLException, IFT287Exception {
     memberTransactions.requestToJoinLot(memberId, lotName);
   }
 
   @Command("accepterDemande")
-  public void acceptRequestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
+  public void acceptRequestToJoinLot(String lotName, long memberId) throws SQLException, IFT287Exception {
     memberTransactions.acceptRequestToJoinLot(lotName, memberId);
   }
 
   @Command("refuserDemande")
-  public void denyRequestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
+  public void denyRequestToJoinLot(String lotName, long memberId) throws SQLException, IFT287Exception {
     memberTransactions.denyRequestToJoinLot(lotName, memberId);
   }
 
@@ -92,12 +92,12 @@ public class JardinCollectifCommandHandler extends CommandHandler {
   }
 
   @Command("planterPlante")
-  public void sowPlantInLot(String plantName, String lotName, int memberId, int quantity, Date plantingDate) throws SQLException, IFT287Exception {
+  public void sowPlantInLot(String plantName, String lotName, long memberId, int quantity, Date plantingDate) throws SQLException, IFT287Exception {
     plantTransactions.sowPlantInLot(plantName, lotName, memberId, quantity, plantingDate);
   }
 
   @Command("recolterPlante")
-  public void harvestPlant(String plantName, String lotName, int memberId) throws SQLException, IFT287Exception {
+  public void harvestPlant(String plantName, String lotName, long memberId) throws SQLException, IFT287Exception {
     plantTransactions.harvestPlant(plantName, lotName, memberId);
   }
 
@@ -151,7 +151,7 @@ public class JardinCollectifCommandHandler extends CommandHandler {
 
   @Command("quitter")
   public void close() throws SQLException {
-    connexion.fermer();
+    connexion.close();
     System.exit(0);
   }
 }

@@ -67,7 +67,7 @@ public class JardinCollectif {
       }
     } finally {
       if (cx != null)
-        cx.fermer();
+        cx.close();
     }
   }
 
@@ -84,7 +84,7 @@ public class JardinCollectif {
       // automatique. En théorie, il ne sert à rien et ne devrait pas apparaître ici
       // dans un programme
       // fini et fonctionnel sans bogues.
-      cx.rollback();
+      cx.getTransaction().rollback();
     }
   }
 

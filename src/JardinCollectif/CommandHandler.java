@@ -49,6 +49,22 @@ public abstract class CommandHandler {
     }
   }
 
+  /**
+   * Lecture d'un long java de la transaction entree a l'ecran
+   */
+  private static long readLong(StringTokenizer tokenizer) throws IFT287Exception {
+    if (tokenizer.hasMoreElements()) {
+      String token = tokenizer.nextToken();
+      try {
+        return Long.valueOf(token).longValue();
+      } catch (NumberFormatException e) {
+        throw new IFT287Exception("Nombre attendu a la place de \"" + token + "\"");
+      }
+    } else {
+      throw new IFT287Exception("Mauvais nombre de paramètres.");
+    }
+  }
+
   private static Date readDate(StringTokenizer tokenizer) throws IFT287Exception {
     if (tokenizer.hasMoreElements()) {
       String token = tokenizer.nextToken();
@@ -77,6 +93,8 @@ public abstract class CommandHandler {
       for (Class type : paramTypes) {
         if (type.equals(Integer.class) || type.equals(int.class)) {
           params.add(readInt(tokenizer));
+        } else if (type.equals(Long.class) || type.equals(long.class)) {
+          params.add(readLong(tokenizer));
         } else if (type.equals(String.class)) {
           params.add(readString(tokenizer));
         } else if (type.equals(Date.class)) {
