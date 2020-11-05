@@ -1,12 +1,18 @@
 package JardinCollectif;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.persistence.*;
 
 /**
- * Gestionnaire d'une connexion avec une BD relationnelle via JDBC.<br><br>
+ * Gestionnaire d'une connexion avec une BD relationnelle via JDBC.<br>
+ * <br>
  * <p>
  * Cette classe ouvre une connexion avec une BD via JDBC.<br>
  * La méthode serveursSupportes() indique les serveurs supportés.<br>
+ * 
  * <pre>
  * Pré-condition
  *   Le driver JDBC approprié doit être accessible.
@@ -15,6 +21,7 @@ import java.sql.*;
  *   La connexion est ouverte en mode autocommit false et sérialisable,
  *   (s'il est supporté par le serveur).
  * </pre>
+ * 
  * <br>
  * IFT287 - Exploitation de BD relationnelles et OO
  *
@@ -23,7 +30,8 @@ import java.sql.*;
  * @version Version 3.0 - 21 mai 2016
  */
 public class Connexion {
-  private final Connection conn;
+  private EntityManager em;
+  private final EntityManagerFactory emf;
 
   /**
    * Ouverture d'une connexion en mode autocommit false et sérialisable (si
@@ -31,92 +39,53 @@ public class Connexion {
    *
    * @param serveur Le type de serveur SQL à utiliser (Valeur : local, dinf).
    * @param bd      Le nom de la base de données sur le serveur.
-   * @param user    Le nom d'utilisateur à utiliser pour se connecter à la base de données.
+   * @param user    Le nom d'utilisateur à utiliser pour se connecter à la base de
+   *                données.
    * @param pass    Le mot de passe associé à l'utilisateur.
    */
-  public Connexion(String serveur, String bd, String user, String pass)
-          throws IFT287Exception, SQLException {
-    Driver d;
-    try {
-      d = (Driver) Class.forName("org.postgresql.Driver").newInstance();
-      DriverManager.registerDriver(d);
-
-      if (serveur.equals("local")) {
-        conn = DriverManager.getConnection("jdbc:postgresql:" + bd, user, pass);
-      } else if (serveur.equals("dinf")) {
-        conn = DriverManager.getConnection("jdbc:postgresql://bd-info2.dinf.usherbrooke.ca:5432/" + bd + "?ssl=true&sslmode=require", user, pass);
-      } else {
-        throw new IFT287Exception("Serveur inconnu");
-      }
-
-      // Mise en mode de commit manuel
-      conn.setAutoCommit(false);
-
-      // Mise en mode sérialisable, si possible
-      // (plus haut niveau d'integrité pour l'accès concurrent aux données)
-      DatabaseMetaData dbmd = conn.getMetaData();
-      if (dbmd.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
-        conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-        System.out.println("Ouverture de la connexion en mode sérialisable :\n"
-                + "Connecté sur la BD postgreSQL "
-                + bd + " avec l'utilisateur " + user);
-      } else {
-        System.out.println("Ouverture de la connexion en mode read committed (default) :\n"
-                + "Connecté sur la BD postgreSQL "
-                + bd + " avec l'utilisateur " + user);
-      }
-    } catch (SQLException e) {
-      throw e;
-    } catch (Exception e) {
-      e.printStackTrace(System.out);
-      throw new IFT287Exception("JDBC Driver non instancié");
+  public Connexion(String serveur, String bd, String user, String pass) throws IFT287Exception, SQLException {
+    if (serveur.equals("local")) {
+      emf = Persistence.createEntityManagerFactory(bd);
+    } else if (serveur.equals("dinf")) {
+      Map<String, String> properties = new HashMap<String, String>();
+      properties.put("javax.persistence.jdbc.user", user);
+      properties.put("javax.persistence.jdbc.password", pass);
+      emf = Persistence.createEntityManagerFactory("objectdb://bd-info2.dinf.usherbrooke.ca:6136/" + user + "/" + bd,
+          properties);
+    } else {
+      throw new IFT287Exception("Serveur inconnu");
     }
+
+    em = emf.createEntityManager();
+
+    System.out
+        .println("Ouverture de la connexion :\n" + "Connecté sur la BD ObjectDB " + bd + " avec l'utilisateur " + user);
   }
 
   /**
-   * Retourne la liste des serveurs supportés par ce gestionnaire de
-   * connexions
+   * Retourne la liste des serveurs supportés par ce gestionnaire de connexions
    */
   public static String serveursSupportes() {
-    return "local : PostgreSQL installé localement\n"
-            + "dinf  : PostgreSQL installé sur les serveurs du département\n";
+    return "local : PostgreSQL installé localement\n" + "dinf  : PostgreSQL installé sur les serveurs du département\n";
   }
 
   /**
    * Fermeture d'une connexion
    */
-  public void fermer() throws SQLException {
-    conn.rollback();
-    conn.close();
-    System.out.println("Connexion fermée " + conn);
+  public void close() throws SQLException {
+    em.close();
+    emf.close();
+    System.out.println("Connexion fermée");
   }
 
-  /**
-   * Commit
-   */
-  public void commit() throws SQLException {
-    conn.commit();
-  }
-
-  public void setIsolationReadCommited() throws SQLException {
-    conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-  }
-
-  /**
-   * Rollback
-   */
-  public void rollback() throws SQLException {
-    conn.rollback();
+  public EntityTransaction getTransaction() {
+    return em.getTransaction();
   }
 
   /**
    * Retourne la Connection JDBC
    */
-  public Connection getConnection() {
-    return conn;
-  }
-
-  public void setAutoCommit(boolean m) throws SQLException {
-    conn.setAutoCommit(false);
+  public EntityManager getEntityManager() {
+    return em;
   }
 }
