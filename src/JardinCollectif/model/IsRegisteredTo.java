@@ -1,20 +1,19 @@
 package JardinCollectif.model;
 
-import JardinCollectif.annotations.Column;
-import JardinCollectif.annotations.Entity;
+import javax.persistence.Id;
+import javax.persistence.Entity;
 
-@Entity("RequestToJoin")
+@Entity
 public class IsRegisteredTo {
-  @Column(primaryKey = true)
-  public int memberId;
+  @Id
+  public long memberId;
 
-  @Column(primaryKey = true)
+  @Id
   public String lotName;
 
-  @Column
   public boolean requestStatus;
 
-  public IsRegisteredTo(int memberId, String lotName, boolean requestStatus) {
+  public IsRegisteredTo(long memberId, String lotName, boolean requestStatus) {
     this.memberId = memberId;
     this.lotName = lotName;
     this.requestStatus = requestStatus;

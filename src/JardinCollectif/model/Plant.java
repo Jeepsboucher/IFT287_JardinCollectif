@@ -1,14 +1,13 @@
 package JardinCollectif.model;
 
-import JardinCollectif.annotations.Column;
-import JardinCollectif.annotations.Entity;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
 public class Plant {
-  @Column(primaryKey = true)
+  @Id
   public String plantName;
 
-  @Column
   public int cultivationTime;
 
   public Plant(String plantName, int cultivationTime) {

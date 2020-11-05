@@ -1,14 +1,13 @@
 package JardinCollectif.model;
 
-import JardinCollectif.annotations.Column;
-import JardinCollectif.annotations.Entity;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Entity
 public class Lot {
-  @Column(primaryKey = true)
+  @Id  
   public String lotName;
 
-  @Column
   public int maxMemberCount;
 
   public Lot(String lotName, int maxMembercount) {

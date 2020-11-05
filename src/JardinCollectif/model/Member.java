@@ -6,7 +6,7 @@ import javax.persistence.Id;
 @Entity
 public class Member {
   @Id
-  public int memberId;
+  public long memberId;
 
   public boolean isAdmin;
 
@@ -16,7 +16,7 @@ public class Member {
 
   public String password;
 
-  public Member(int memberId, boolean isAdmin, String firstName, String lastName, String password) {
+  public Member(long memberId, boolean isAdmin, String firstName, String lastName, String password) {
     this.memberId = memberId;
     this.isAdmin = isAdmin;
     this.firstName = firstName;
