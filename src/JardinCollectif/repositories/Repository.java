@@ -33,8 +33,18 @@ public abstract class Repository<T> extends GenericHelper<T> {
     connexion.getEntityManager().persist(toCreate);
   }
 
-  public T retrieve(Object... id) {
-    return (T) connexion.getEntityManager().find(getGenericType(), id);
+  public T retrieve(Object... id) throws IFT287Exception {
+    List<String> idNames = tableHelper.getPrimaryKey();
+    if (idNames.size() != id.length)
+      throw new IFT287Exception("Wrong number of primary key provided.");
+
+    for (int i = 0; i < id.length; i++) {
+      retrieveQuery.setParameter(idNames.get(i), id[i]);
+    }
+
+    List<T> results = retrieveQuery.getResultList();
+
+    return results.isEmpty() ? null : results.get(0);
   }
 
   public List<T> retrieveAll() {
@@ -45,7 +55,15 @@ public abstract class Repository<T> extends GenericHelper<T> {
     connexion.getEntityManager().remove(toDelete);
   }
 
-  public boolean exists(Object... id) {
-    return connexion.getEntityManager().find(getGenericType(), id) == null;
+  public boolean exists(Object... id) throws IFT287Exception {
+    List<String> idNames = tableHelper.getPrimaryKey();
+    if (idNames.size() != id.length)
+      throw new IFT287Exception("Wrong number of primary key provided.");
+
+    for (int i = 0; i < id.length; i++) {
+      retrieveQuery.setParameter(idNames.get(i), id[i]);
+    }
+
+    return !retrieveQuery.getResultList().isEmpty();
   }
 }
