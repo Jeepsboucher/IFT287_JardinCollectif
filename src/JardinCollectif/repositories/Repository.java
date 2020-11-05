@@ -21,7 +21,7 @@ public abstract class Repository<T> extends GenericHelper<T> {
     tableHelper = new TableHelper(getGenericType());
 
     String tableName = tableHelper.getTableName();
-    String primaryKeyName = tableHelper.getPrimaryKey().stream().map(idName -> "t." + idName + ":" + idName)
+    String primaryKeyName = tableHelper.getPrimaryKey().stream().map(idName -> "t." + idName + "= :" + idName)
         .collect(Collectors.joining(" AND ", "", ""));
 
     retrieveQuery = connexion.getEntityManager()
