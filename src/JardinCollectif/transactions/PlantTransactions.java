@@ -80,7 +80,7 @@ public class PlantTransactions {
     }
   }
 
-  public void sowPlantInLot(String plantName, String lotName, int memberId, int quantity, Date plantingDate) throws SQLException, IFT287Exception {
+  public void sowPlantInLot(String plantName, String lotName, long memberId, int quantity, Date plantingDate) throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 
@@ -123,7 +123,7 @@ public class PlantTransactions {
     }
   }
 
-  public void harvestPlant(String plantName, String lotName, int memberId) throws SQLException, IFT287Exception {
+  public void harvestPlant(String plantName, String lotName, long memberId) throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 

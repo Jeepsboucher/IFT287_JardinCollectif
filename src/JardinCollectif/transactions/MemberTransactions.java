@@ -27,7 +27,7 @@ public class MemberTransactions {
     this.isRegisteredToRepository = isRegisteredToRepository;
   }
 
-  public void addMember(int memberId, String firstName, String lastName, String password)
+  public void addMember(long memberId, String firstName, String lastName, String password)
       throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
@@ -61,7 +61,7 @@ public class MemberTransactions {
     }
   }
 
-  public void removeMember(int memberId) throws SQLException, IFT287Exception {
+  public void removeMember(long memberId) throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 
@@ -82,7 +82,7 @@ public class MemberTransactions {
     }
   }
 
-  public void promoteToAdmin(int memberId) throws SQLException, IFT287Exception {
+  public void promoteToAdmin(long memberId) throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 
@@ -104,7 +104,7 @@ public class MemberTransactions {
     }
   }
 
-  public void requestToJoinLot(int memberId, String lotName) throws SQLException, IFT287Exception {
+  public void requestToJoinLot(long memberId, String lotName) throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 
@@ -140,7 +140,7 @@ public class MemberTransactions {
     }
   }
 
-  public void acceptRequestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
+  public void acceptRequestToJoinLot(String lotName, Long memberId) throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 
@@ -162,7 +162,7 @@ public class MemberTransactions {
     }
   }
 
-  public void denyRequestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
+  public void denyRequestToJoinLot(String lotName, Long memberId) throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 

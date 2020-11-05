@@ -22,7 +22,7 @@ public class IsRegisteredToRepository extends Repository<IsRegisteredTo> {
         .createQuery("DELETE FROM RequestToJoin r WHERE r.lotName = ?1", Long.class);
   }
 
-  public boolean isMemberRegisteredToALot(int memberId) {
+  public boolean isMemberRegisteredToALot(long memberId) {
     countMemberRegisteredToALotStatement.setParameter(1, memberId);
     Long result = countMemberRegisteredToALotStatement.getSingleResult();
     return result > 0;
