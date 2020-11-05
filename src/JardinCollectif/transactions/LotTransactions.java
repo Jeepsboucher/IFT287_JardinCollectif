@@ -27,6 +27,8 @@ public class LotTransactions {
 
   public void addLot(String lotName, int maxMembercount) throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (lotName == null || lotName.isEmpty()) {
         throw new IFT287Exception("Le lot doit avoir un nom.");
       }
@@ -42,15 +44,17 @@ public class LotTransactions {
       Lot newLot = new Lot(lotName, maxMembercount);
       lotRepository.create(newLot);
 
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback(); 
     }
   }
 
   public void removeLot(String lotName) throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (lotName == null || lotName.isEmpty()) {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
       }
@@ -66,10 +70,10 @@ public class LotTransactions {
       isRegisteredToRepository.deleteRequestToJoinLot(lotName);
       lotRepository.delete(lotName);
 
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback(); 
     }
   }
 

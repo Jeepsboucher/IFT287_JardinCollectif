@@ -27,8 +27,11 @@ public class MemberTransactions {
     this.isRegisteredToRepository = isRegisteredToRepository;
   }
 
-  public void addMember(int memberId, String firstName, String lastName, String password) throws SQLException, IFT287Exception {
+  public void addMember(int memberId, String firstName, String lastName, String password)
+      throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (firstName == null || firstName.isEmpty()) {
         throw new IFT287Exception("Le membre doit avoir un prénom.");
       }
@@ -51,15 +54,17 @@ public class MemberTransactions {
 
       Member newMember = new Member(memberId, false, firstName, lastName, password);
       memberRepository.create(newMember);
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback();
     }
   }
 
   public void removeMember(int memberId) throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (!memberRepository.exists(memberId)) {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
@@ -69,36 +74,40 @@ public class MemberTransactions {
       }
 
       memberRepository.delete(memberId);
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback();
     }
   }
 
   public void promoteToAdmin(int memberId) throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (!memberRepository.exists(memberId)) {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
-      
+
       Member toUpdate = memberRepository.retrieve(memberId);
       if (toUpdate.isAdmin) {
         throw new IFT287Exception("Le membre spécifié est déjà administrateur.");
       }
 
       toUpdate.isAdmin = true;
-      memberRepository.update(toUpdate); 
+      memberRepository.update(toUpdate);
 
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback();
     }
   }
 
   public void requestToJoinLot(int memberId, String lotName) throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (lotName == null || lotName.isEmpty()) {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
       }
@@ -117,21 +126,24 @@ public class MemberTransactions {
 
       Lot lot = lotRepository.retrieve(lotName);
       if (isRegisteredToRepository.countMembershipInLot(lotName) == lot.maxMemberCount) {
-        throw new IFT287Exception("Nombre maximum de membre inscrit au lot atteint. Veuillez refuser les demandes en cours ou retirer des membres au lot.");
+        throw new IFT287Exception(
+            "Nombre maximum de membre inscrit au lot atteint. Veuillez refuser les demandes en cours ou retirer des membres au lot.");
       }
 
       IsRegisteredTo newIsRegisteredTo = new IsRegisteredTo(memberId, lotName, false);
       isRegisteredToRepository.create(newIsRegisteredTo);
 
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback();
     }
   }
 
   public void acceptRequestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (lotName == null || lotName.isEmpty()) {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
       }
@@ -143,15 +155,17 @@ public class MemberTransactions {
       IsRegisteredTo updatedIsRegisteredTo = new IsRegisteredTo(memberId, lotName, true);
       isRegisteredToRepository.update(updatedIsRegisteredTo);
 
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback();
     }
   }
 
   public void denyRequestToJoinLot(String lotName, int memberId) throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (lotName == null || lotName.isEmpty()) {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
       }
@@ -162,10 +176,10 @@ public class MemberTransactions {
 
       isRegisteredToRepository.delete(memberId, lotName);
 
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback();
     }
   }
 

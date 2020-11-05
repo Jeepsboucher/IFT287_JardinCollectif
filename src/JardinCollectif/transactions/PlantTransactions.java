@@ -30,6 +30,8 @@ public class PlantTransactions {
 
   public void addPlant(String plantName, int cultivationTime) throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (plantName == null || plantName.isEmpty()){
         throw new IFT287Exception("La plante doit avoir un nom.");
       }
@@ -45,15 +47,17 @@ public class PlantTransactions {
       Plant newPlant = new Plant(plantName, cultivationTime);
       plantRepository.create(newPlant);
 
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback();
     }
   }
 
   public void removePlant(String plantName) throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (plantName == null || plantName.isEmpty()){
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
       }
@@ -67,15 +71,17 @@ public class PlantTransactions {
       }
 
       plantRepository.delete(plantName);
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback();
     }
   }
 
   public void sowPlantInLot(String plantName, String lotName, int memberId, int quantity, Date plantingDate) throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (plantName == null || plantName.isEmpty()){
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
       }
@@ -108,15 +114,17 @@ public class PlantTransactions {
       IsSowedIn newIsSowedIn = new IsSowedIn(-1, quantity, plantingDate, memberId, lotName, plantName);
       isSowedInRepository.create(newIsSowedIn);
 
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback();
     }
   }
 
   public void harvestPlant(String plantName, String lotName, int memberId) throws SQLException, IFT287Exception {
     try {
+      connexion.getTransaction().begin();
+
       if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante doit avoir un nom.");
       }
@@ -149,10 +157,10 @@ public class PlantTransactions {
         throw new IFT287Exception("Aucun exemplaire de la plante spécifiée n'est prêt à être récolté.");
       }
 
-      connexion.commit();
-    } catch (Exception e) {
-      connexion.rollback();
-      throw e;
+      connexion.getTransaction().commit();
+    } finally {
+      if (connexion.getTransaction().isActive())
+        connexion.getTransaction().rollback();
     }
   }
 
