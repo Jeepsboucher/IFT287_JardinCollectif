@@ -4,42 +4,38 @@ import JardinCollectif.Connexion;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.IsRegisteredTo;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.persistence.TypedQuery;
 
 public class IsRegisteredToRepository extends Repository<IsRegisteredTo> {
-  private final PreparedStatement countMemberRegisteredToALotStatement;
-  private final PreparedStatement countMembershipInLotStatement;
-  private final PreparedStatement deleteRequestToJoinLotStatement;
+  private final TypedQuery<Long> countMemberRegisteredToALotStatement;
+  private final TypedQuery<Long> countMembershipInLotStatement;
+  private final TypedQuery<Long> deleteRequestToJoinLotStatement;
 
-  public IsRegisteredToRepository(Connexion connexion) throws ClassNotFoundException, SQLException, IFT287Exception {
+  public IsRegisteredToRepository(Connexion connexion) throws ClassNotFoundException, IFT287Exception {
     super(connexion);
 
-    countMemberRegisteredToALotStatement = connexion.getConnection()
-            .prepareStatement("SELECT COUNT(memberId) FROM RequestToJoin WHERE memberId = ?;");
-    countMembershipInLotStatement = connexion.getConnection()
-            .prepareStatement("SELECT COUNT(lotName) FROM RequestToJoin WHERE lotName = ?;");
-    deleteRequestToJoinLotStatement = connexion.getConnection()
-            .prepareStatement("DELETE FROM RequestToJoin WHERE lotName = ?");
+    countMemberRegisteredToALotStatement = connexion.getEntityManager()
+        .createQuery("SELECT COUNT(r.memberId) FROM RequestToJoin r WHERE r.memberId = ?1", Long.class);
+    countMembershipInLotStatement = connexion.getEntityManager()
+        .createQuery("SELECT COUNT(r.lotName) FROM RequestToJoin r WHERE r.lotName = ?1", Long.class);
+    deleteRequestToJoinLotStatement = connexion.getEntityManager()
+        .createQuery("DELETE FROM RequestToJoin r WHERE r.lotName = ?1", Long.class);
   }
 
-  public boolean isMemberRegisteredToALot(int memberId) throws SQLException {
-    countMemberRegisteredToALotStatement.setInt(1, memberId);
-    ResultSet result = countMemberRegisteredToALotStatement.executeQuery();
-    result.next();
-    return result.getInt(1) > 0;
+  public boolean isMemberRegisteredToALot(int memberId) {
+    countMemberRegisteredToALotStatement.setParameter(1, memberId);
+    Long result = countMemberRegisteredToALotStatement.getSingleResult();
+    return result > 0;
   }
 
-  public int countMembershipInLot(String lotName) throws SQLException {
-    countMembershipInLotStatement.setString(1, lotName);
-    ResultSet result = countMembershipInLotStatement.executeQuery();
-    result.next();
-    return result.getInt(1);
+  public int countMembershipInLot(String lotName) {
+    countMembershipInLotStatement.setParameter(1, lotName);
+    Long result = countMembershipInLotStatement.getSingleResult();
+    return result.intValue();
   }
 
-  public int deleteRequestToJoinLot(String lotName) throws SQLException {
-    deleteRequestToJoinLotStatement.setString(1, lotName);
+  public int deleteRequestToJoinLot(String lotName) {
+    deleteRequestToJoinLotStatement.setParameter(1, lotName);
     return deleteRequestToJoinLotStatement.executeUpdate();
   }
 }

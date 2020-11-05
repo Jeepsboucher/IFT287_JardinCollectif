@@ -1,37 +1,30 @@
 package JardinCollectif.repositories;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.TypedQuery;
 
 import JardinCollectif.Connexion;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.Member;
 
 public class MemberRepository extends Repository<Member> {
-  private PreparedStatement retrieveMembersInLotStatement;
+  private TypedQuery<Member> retrieveMembersInLotStatement;
 
-  public MemberRepository(Connexion connexion) throws ClassNotFoundException, SQLException, IFT287Exception {
+  public MemberRepository(Connexion connexion) throws ClassNotFoundException, IFT287Exception {
     super(connexion);
 
-    retrieveMembersInLotStatement = connexion.getConnection()
-            .prepareStatement("SELECT Member.memberId, Member.isAdmin, Member.firstName, Member.lastName, Member.password FROM Member " +
-                    "INNER JOIN RequestToJoin ON Member.memberId = RequestToJoin.memberId " +
-                    "INNER JOIN Lot ON Lot.lotName = RequestToJoin.lotName " +
-                    "WHERE RequestToJoin.requestStatus = TRUE AND Lot.lotName = ?");
+    retrieveMembersInLotStatement = connexion.getEntityManager().createQuery(
+        "SELECT m.memberId, m.isAdmin, m.firstName, m.lastName, m.password FROM Member m"
+            + "INNER JOIN RequestToJoin ON m.memberId = RequestToJoin.memberId "
+            + "INNER JOIN Lot ON Lot.lotName = RequestToJoin.lotName "
+            + "WHERE RequestToJoin.requestStatus = TRUE AND Lot.lotName = ?",
+        Member.class);
   }
 
-  public List<Member> retrieveMembersInLot(String lotName) throws SQLException, IFT287Exception {
-    List<Member> members = new ArrayList<>();
-    retrieveMembersInLotStatement.setString(1, lotName);
-
-    ResultSet results = retrieveMembersInLotStatement.executeQuery();
-    while (results.next()) {
-      members.add(instantiateEntity(results));
-    }
-
+  public List<Member> retrieveMembersInLot(String lotName) throws IFT287Exception {
+    retrieveMembersInLotStatement.setParameter(1, lotName);
+    List<Member> members = retrieveMembersInLotStatement.getResultList();
     return members;
   }
 }
