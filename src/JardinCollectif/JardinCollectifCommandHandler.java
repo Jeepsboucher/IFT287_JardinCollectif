@@ -1,6 +1,5 @@
 package JardinCollectif;
 
-import JardinCollectif.repositories.IsRegisteredToRepository;
 import JardinCollectif.repositories.IsSowedInRepository;
 import JardinCollectif.repositories.LotRepository;
 import JardinCollectif.repositories.MemberRepository;
@@ -32,13 +31,12 @@ public class JardinCollectifCommandHandler extends CommandHandler {
     MemberRepository memberRepository = new MemberRepository(connexion);
     LotRepository lotRepository = new LotRepository(connexion);
     PlantRepository plantRepository = new PlantRepository(connexion);
-    IsRegisteredToRepository isRegisteredToRepository = new IsRegisteredToRepository(connexion);
     IsSowedInRepository isSowedInRepository = new IsSowedInRepository(connexion);
 
-    memberTransactions = new MemberTransactions(connexion, memberRepository, lotRepository, isRegisteredToRepository);
-    lotTransactions = new LotTransactions(connexion, lotRepository, isSowedInRepository, isRegisteredToRepository);
+    memberTransactions = new MemberTransactions(connexion, memberRepository, lotRepository);
+    lotTransactions = new LotTransactions(connexion, lotRepository, isSowedInRepository);
     plantTransactions = new PlantTransactions(connexion, plantRepository, lotRepository, memberRepository,
-        isSowedInRepository, isRegisteredToRepository);
+        isSowedInRepository);
   }
 
   @Command("inscrireMembre")

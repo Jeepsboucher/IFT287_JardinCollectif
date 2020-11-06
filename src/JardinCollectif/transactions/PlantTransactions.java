@@ -5,6 +5,9 @@ import JardinCollectif.IFT287Exception;
 import JardinCollectif.repositories.*;
 import JardinCollectif.model.Plant;
 import JardinCollectif.model.IsSowedIn;
+import JardinCollectif.model.Lot;
+import JardinCollectif.model.Member;
+
 import java.sql.SQLException;
 import java.time.Instant;
 import java.sql.Date;
@@ -17,26 +20,24 @@ public class PlantTransactions {
   private LotRepository lotRepository;
   private MemberRepository memberRepository;
   private IsSowedInRepository isSowedInRepository;
-  private IsRegisteredToRepository isRegisteredToRepository;
 
-  public PlantTransactions(Connexion connexion, PlantRepository plantRepository, LotRepository lotRepository, MemberRepository memberRepository, IsSowedInRepository isSowedInRepository, IsRegisteredToRepository isRegisteredToRepository) {
+  public PlantTransactions(Connexion connexion, PlantRepository plantRepository, LotRepository lotRepository, MemberRepository memberRepository, IsSowedInRepository isSowedInRepository) {
     this.connexion = connexion;
     this.plantRepository = plantRepository;
     this.lotRepository = lotRepository;
     this.memberRepository = memberRepository;
     this.isSowedInRepository = isSowedInRepository;
-    this.isRegisteredToRepository = isRegisteredToRepository;
   }
 
   public void addPlant(String plantName, int cultivationTime) throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 
-      if (plantName == null || plantName.isEmpty()){
+      if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante doit avoir un nom.");
       }
 
-      if (plantRepository.exists(plantName)){
+      if (plantRepository.exists(plantName)) {
         throw new IFT287Exception("Une plante ayant ce nom existe déjà.");
       }
 
@@ -58,12 +59,12 @@ public class PlantTransactions {
     try {
       connexion.getTransaction().begin();
 
-      if (plantName == null || plantName.isEmpty()){
+      if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
       }
 
       Plant toDelete = plantRepository.retrieve(plantName);
-      if (toDelete == null){
+      if (toDelete == null) {
         throw new IFT287Exception("La plante spécifié n'existe pas.");
       }
 
@@ -84,11 +85,11 @@ public class PlantTransactions {
     try {
       connexion.getTransaction().begin();
 
-      if (plantName == null || plantName.isEmpty()){
+      if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
       }
 
-      if (!plantRepository.exists(plantName)){
+      if (!plantRepository.exists(plantName)) {
         throw new IFT287Exception("La plante spécifié n'existe pas.");
       }
 
@@ -96,11 +97,13 @@ public class PlantTransactions {
         throw new IFT287Exception("Le lot doit avoir un nom.");
       }
 
-      if (!lotRepository.exists(lotName)) {
+      Lot lot = lotRepository.retrieve(lotName);
+      if (lot == null) {
         throw new IFT287Exception("Le lot spécifié n'existe pas.");
       }
 
-      if (!memberRepository.exists(memberId)) {
+      Member member = memberRepository.retrieve(memberId);
+      if (member == null) {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
 
@@ -108,7 +111,7 @@ public class PlantTransactions {
         throw new IFT287Exception("La quantité doit être d'au moins un.");
       }
 
-      if (!isRegisteredToRepository.exists(memberId, lotName) || !isRegisteredToRepository.retrieve(memberId, lotName).requestStatus) {
+      if (!lot.registrations.contains(member)) {
         throw new IFT287Exception("Le membre spécifié n'a pa accès au lot spécifié.");
       }
       
@@ -139,15 +142,17 @@ public class PlantTransactions {
         throw new IFT287Exception("Le lot doit avoir un nom.");
       }
 
-      if (!lotRepository.exists(lotName)) {
+      Lot lot = lotRepository.retrieve(lotName);
+      if (lot == null) {
         throw new IFT287Exception("Le lot spécifié n'existe pas.");
       }
-      
-      if (!memberRepository.exists(memberId)) {
+
+      Member member = memberRepository.retrieve(memberId);
+      if (member == null) {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
 
-      if (!isRegisteredToRepository.exists(memberId, lotName) || !isRegisteredToRepository.retrieve(memberId, lotName).requestStatus) {
+      if (!lot.registrations.contains(member)) {
         throw new IFT287Exception("Le membre spécifié n'a pa accès au lot spécifié.");
       }
 

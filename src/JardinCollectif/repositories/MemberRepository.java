@@ -15,10 +15,10 @@ public class MemberRepository extends Repository<Member> {
     super(connexion);
 
     retrieveMembersInLotStatement = connexion.getEntityManager().createQuery(
-        "SELECT m.memberId, m.isAdmin, m.firstName, m.lastName, m.password FROM Member m"
-            + "INNER JOIN IsRegisteredTo ON m.memberId = IsRegisteredTo.memberId "
-            + "INNER JOIN Lot ON Lot.lotName = IsRegisteredTo.lotName "
-            + "WHERE IsRegisteredTo.requestStatus = TRUE AND Lot.lotName = ?",
+        "SELECT m FROM Member m, IsRegisteredTo r, Lot l "
+            + "INNER JOIN m.memberId r "
+            + "INNER JOIN r.lotName l "
+            + "WHERE r.requestStatus = TRUE AND l.lotName = ?1",
         Member.class);
   }
 
