@@ -96,3 +96,7 @@ fabric.properties
 
 # Exception for driver lib
 !lib/postgresql.jar
+
+# No odb file
+*.odb
+*.odb$

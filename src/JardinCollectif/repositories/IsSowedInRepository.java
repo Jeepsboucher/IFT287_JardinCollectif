@@ -11,47 +11,47 @@ import java.util.List;
 import javax.persistence.TypedQuery;
 
 public class IsSowedInRepository extends Repository<IsSowedIn> {
-  private final TypedQuery<IsSowedIn> retrieveFromPlantStatement;
-  private final TypedQuery<IsSowedIn> retrieveFromLotStatement;
-  private final TypedQuery<Long> deletePlantsOlderThanWithNameInLotStatement;
-  private final TypedQuery<Long> quantitySowStatement;
+  private final TypedQuery<IsSowedIn> retrieveFromPlantQuery;
+  private final TypedQuery<IsSowedIn> retrieveFromLotQuery;
+  private final TypedQuery<Long> deletePlantsOlderThanWithNameInLotQuery;
+  private final TypedQuery<Integer> quantitySowQuery;
 
   public IsSowedInRepository(Connexion connexion) throws ClassNotFoundException, SQLException, IFT287Exception {
     super(connexion);
-    retrieveFromPlantStatement = connexion.getEntityManager()
-        .createQuery("SELECT i FROM IsSowedIn i WHERE plantName = ?1;", IsSowedIn.class);
-    retrieveFromLotStatement = connexion.getEntityManager().createQuery("SELECT i FROM IsSowedIn i WHERE lotName = ?1",
+    retrieveFromPlantQuery = connexion.getEntityManager()
+        .createQuery("SELECT i FROM IsSowedIn i WHERE i.plantName = ?1", IsSowedIn.class);
+    retrieveFromLotQuery = connexion.getEntityManager().createQuery("SELECT i FROM IsSowedIn i WHERE i.lotName = ?1",
         IsSowedIn.class);
-    deletePlantsOlderThanWithNameInLotStatement = connexion.getEntityManager()
-        .createQuery("DELETE FROM IsSowedIn i WHERE i.plantingDate <= ?1 AND i.plantName = ?2 AND i.lotName = ?3", Long.class);
-    quantitySowStatement = connexion.getEntityManager()
-        .createQuery("SELECT SUM(i.quantity) FROM IsSowedIn i WHERE plantName = ?1", Long.class);
+    deletePlantsOlderThanWithNameInLotQuery = connexion.getEntityManager().createQuery(
+        "DELETE FROM IsSowedIn i WHERE i.plantingDate <= ?1 AND i.plantName = ?2 AND i.lotName = ?3", Long.class);
+    quantitySowQuery = connexion.getEntityManager()
+        .createQuery("SELECT SUM(i.quantity) FROM IsSowedIn i WHERE i.plantName = ?1", Integer.class);
   }
 
   public List<IsSowedIn> retrieveFromPlant(String plantName) throws IFT287Exception, SQLException {
-    retrieveFromPlantStatement.setParameter(1, plantName);
-    List<IsSowedIn> isSowedInResults = retrieveFromPlantStatement.getResultList();
+    retrieveFromPlantQuery.setParameter(1, plantName);
+    List<IsSowedIn> isSowedInResults = retrieveFromPlantQuery.getResultList();
     return isSowedInResults;
   }
 
   public List<IsSowedIn> retrieveFromLot(String lotName) throws SQLException, IFT287Exception {
-    retrieveFromLotStatement.setParameter(1, lotName);
-    List<IsSowedIn> isSowedInResults = retrieveFromLotStatement.getResultList();
+    retrieveFromLotQuery.setParameter(1, lotName);
+    List<IsSowedIn> isSowedInResults = retrieveFromLotQuery.getResultList();
     return isSowedInResults;
   }
 
   public int deletePlantsOlderThanWithNameInLot(Date plantingDate, String plantName, String lotName)
       throws SQLException, IFT287Exception {
-    deletePlantsOlderThanWithNameInLotStatement.setParameter(1, plantingDate);
-    deletePlantsOlderThanWithNameInLotStatement.setParameter(2, plantName);
-    deletePlantsOlderThanWithNameInLotStatement.setParameter(3, lotName);
+    deletePlantsOlderThanWithNameInLotQuery.setParameter(1, plantingDate);
+    deletePlantsOlderThanWithNameInLotQuery.setParameter(2, plantName);
+    deletePlantsOlderThanWithNameInLotQuery.setParameter(3, lotName);
 
-    return deletePlantsOlderThanWithNameInLotStatement.executeUpdate();
+    return deletePlantsOlderThanWithNameInLotQuery.executeUpdate();
   }
 
   public int getQuantitySowed(String plantName) throws SQLException, IFT287Exception {
-    quantitySowStatement.setParameter(1, plantName);
-    Long result = quantitySowStatement.getSingleResult();
-    return result.intValue();
+    quantitySowQuery.setParameter(1, plantName);
+    Integer result = quantitySowQuery.getSingleResult();
+    return result == null ? 0 : result;
   }
 }

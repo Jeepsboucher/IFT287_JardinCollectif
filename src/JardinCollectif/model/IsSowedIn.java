@@ -8,7 +8,8 @@ import javax.persistence.Id;
 
 @Entity
 public class IsSowedIn {
-  @Id @GeneratedValue
+  @Id
+  @GeneratedValue
   public long isSowedInId;
 
   public int quantity;

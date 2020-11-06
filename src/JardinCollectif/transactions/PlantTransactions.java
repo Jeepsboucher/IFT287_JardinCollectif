@@ -21,7 +21,8 @@ public class PlantTransactions {
   private MemberRepository memberRepository;
   private IsSowedInRepository isSowedInRepository;
 
-  public PlantTransactions(Connexion connexion, PlantRepository plantRepository, LotRepository lotRepository, MemberRepository memberRepository, IsSowedInRepository isSowedInRepository) {
+  public PlantTransactions(Connexion connexion, PlantRepository plantRepository, LotRepository lotRepository,
+      MemberRepository memberRepository, IsSowedInRepository isSowedInRepository) {
     this.connexion = connexion;
     this.plantRepository = plantRepository;
     this.lotRepository = lotRepository;
@@ -81,7 +82,8 @@ public class PlantTransactions {
     }
   }
 
-  public void sowPlantInLot(String plantName, String lotName, long memberId, int quantity, Date plantingDate) throws SQLException, IFT287Exception {
+  public void sowPlantInLot(String plantName, String lotName, long memberId, int quantity, Date plantingDate)
+      throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 
@@ -112,10 +114,10 @@ public class PlantTransactions {
       }
 
       if (!lot.registrations.contains(member)) {
-        throw new IFT287Exception("Le membre spécifié n'a pa accès au lot spécifié.");
+        throw new IFT287Exception("Le membre spécifié n'a pas accès au lot spécifié.");
       }
-      
-      //Id will be ignored since it's auto-generated.
+
+      // Id will be ignored since it's auto-generated.
       IsSowedIn newIsSowedIn = new IsSowedIn(-1, quantity, plantingDate, memberId, lotName, plantName);
       isSowedInRepository.create(newIsSowedIn);
 
@@ -153,13 +155,15 @@ public class PlantTransactions {
       }
 
       if (!lot.registrations.contains(member)) {
-        throw new IFT287Exception("Le membre spécifié n'a pa accès au lot spécifié.");
+        throw new IFT287Exception("Le membre spécifié n'a pas accès au lot spécifié.");
       }
 
       Plant plant = plantRepository.retrieve(plantName);
-      Date plantationDate = new Date(java.util.Date.from(Instant.now().minusSeconds(plant.cultivationTime * 24 * 60 * 60)).getTime());
+      Date plantationDate = new Date(
+          java.util.Date.from(Instant.now().minusSeconds(plant.cultivationTime * 24 * 60 * 60)).getTime());
 
-      boolean hasHarvestedSomething = isSowedInRepository.deletePlantsOlderThanWithNameInLot(plantationDate, plantName, lotName) > 0;
+      boolean hasHarvestedSomething = isSowedInRepository.deletePlantsOlderThanWithNameInLot(plantationDate, plantName,
+          lotName) > 0;
       if (!hasHarvestedSomething) {
         throw new IFT287Exception("Aucun exemplaire de la plante spécifiée n'est prêt à être récolté.");
       }
@@ -198,7 +202,7 @@ public class PlantTransactions {
 
     return isSowedInRepository.retrieveFromLot(lotName);
   }
-  
+
   public Date getHarvestDate(IsSowedIn isSowedIn) throws IFT287Exception, SQLException {
     if (isSowedIn.plantName == null || isSowedIn.plantName.isEmpty()) {
       throw new IFT287Exception("La plante spécifié doit avoir un nom.");

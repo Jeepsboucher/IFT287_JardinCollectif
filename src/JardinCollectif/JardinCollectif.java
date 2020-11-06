@@ -5,7 +5,6 @@
 package JardinCollectif;
 
 import java.io.*;
-import java.sql.*;
 
 /**
  * Fichier de base pour le TP2 du cours IFT287
@@ -47,7 +46,7 @@ public class JardinCollectif {
   public static void main(String[] args) throws Exception {
     if (args.length < 4) {
       System.out.println(
-              "Usage: java JardinCollectif.JardinCollectif <serveur> <bd> <user> <password> [<fichier-transactions>]");
+          "Usage: java JardinCollectif.JardinCollectif <serveur> <bd> <user> <password> [<fichier-transactions>]");
       return;
     }
 
@@ -84,7 +83,8 @@ public class JardinCollectif {
       // automatique. En théorie, il ne sert à rien et ne devrait pas apparaître ici
       // dans un programme
       // fini et fonctionnel sans bogues.
-      cx.getTransaction().rollback();
+      if (cx.getTransaction().isActive())
+        cx.getTransaction().rollback();
     }
   }
 

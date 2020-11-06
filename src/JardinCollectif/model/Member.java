@@ -1,16 +1,13 @@
 package JardinCollectif.model;
 
+import java.util.LinkedList;
 import java.util.List;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 
 @Entity
-@Access(AccessType.FIELD)
 public class Member {
   @Id
   public long memberId;
@@ -26,7 +23,7 @@ public class Member {
   @ManyToMany(mappedBy = "registrations")
   public List<Lot> acceptedRegistrations;
 
-  @OneToMany
+  @ManyToMany
   public List<Lot> pendingRegistrations;
 
   public Member(long memberId, boolean isAdmin, String firstName, String lastName, String password) {
@@ -35,5 +32,8 @@ public class Member {
     this.firstName = firstName;
     this.lastName = lastName;
     this.password = password;
+
+    this.acceptedRegistrations = new LinkedList<>();
+    this.pendingRegistrations = new LinkedList<>();
   }
 }

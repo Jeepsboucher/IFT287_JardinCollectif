@@ -4,6 +4,7 @@ import JardinCollectif.repositories.IsSowedInRepository;
 import JardinCollectif.repositories.LotRepository;
 import JardinCollectif.repositories.MemberRepository;
 import JardinCollectif.repositories.PlantRepository;
+import JardinCollectif.repositories.Repository;
 import JardinCollectif.transactions.LotTransactions;
 import JardinCollectif.transactions.MemberTransactions;
 import JardinCollectif.transactions.PlantTransactions;
@@ -40,7 +41,8 @@ public class JardinCollectifCommandHandler extends CommandHandler {
   }
 
   @Command("inscrireMembre")
-  public void addMember(String firstName, String lastName, String password, long memberId) throws SQLException, IFT287Exception {
+  public void addMember(String firstName, String lastName, String password, long memberId)
+      throws SQLException, IFT287Exception {
     memberTransactions.addMember(memberId, firstName, lastName, password);
   }
 
@@ -90,7 +92,8 @@ public class JardinCollectifCommandHandler extends CommandHandler {
   }
 
   @Command("planterPlante")
-  public void sowPlantInLot(String plantName, String lotName, long memberId, int quantity, Date plantingDate) throws SQLException, IFT287Exception {
+  public void sowPlantInLot(String plantName, String lotName, long memberId, int quantity, Date plantingDate)
+      throws SQLException, IFT287Exception {
     plantTransactions.sowPlantInLot(plantName, lotName, memberId, quantity, plantingDate);
   }
 
