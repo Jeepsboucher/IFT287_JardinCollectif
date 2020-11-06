@@ -44,12 +44,13 @@ public class Connexion {
    * @param pass    Le mot de passe associé à l'utilisateur.
    */
   public Connexion(String serveur, String bd, String user, String pass) throws IFT287Exception, SQLException {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("javax.persistence.jdbc.user", user);
+    properties.put("javax.persistence.jdbc.password", pass);
+
     if (serveur.equals("local")) {
-      emf = Persistence.createEntityManagerFactory(bd);
+      emf = Persistence.createEntityManagerFactory(bd + ".odb", properties);
     } else if (serveur.equals("dinf")) {
-      Map<String, String> properties = new HashMap<String, String>();
-      properties.put("javax.persistence.jdbc.user", user);
-      properties.put("javax.persistence.jdbc.password", pass);
       emf = Persistence.createEntityManagerFactory("objectdb://bd-info2.dinf.usherbrooke.ca:6136/" + user + "/" + bd,
           properties);
     } else {
@@ -73,6 +74,7 @@ public class Connexion {
    * Fermeture d'une connexion
    */
   public void close() throws SQLException {
+    em.clear();
     em.close();
     emf.close();
     System.out.println("Connexion fermée");
