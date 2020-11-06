@@ -2,12 +2,15 @@ package JardinCollectif.model;
 
 import java.util.List;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 @Entity
+@Access(AccessType.FIELD)
 public class Member {
   @Id
   public long memberId;

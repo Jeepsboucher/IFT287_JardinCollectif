@@ -13,7 +13,7 @@ public class Lot {
 
   public int maxMemberCount;
 
-  @ManyToMany(mappedBy = "acceptedRegistrations")
+  @ManyToMany
   public List<Member> registrations;
 
   public Lot(String lotName, int maxMembercount) {
