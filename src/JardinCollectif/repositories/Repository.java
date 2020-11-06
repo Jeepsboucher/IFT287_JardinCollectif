@@ -5,16 +5,15 @@ import JardinCollectif.IFT287Exception;
 import JardinCollectif.repositories.helpers.GenericHelper;
 import JardinCollectif.repositories.helpers.TableHelper;
 
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.TypedQuery;
-
 public abstract class Repository<T> extends GenericHelper<T> {
+  protected final Connexion connexion;
   private final TypedQuery<T> retrieveQuery;
   private final TypedQuery<T> retrieveAllQuery;
   private final TableHelper tableHelper;
-  protected final Connexion connexion;
 
   public Repository(Connexion connexion) throws ClassNotFoundException, IFT287Exception {
     this.connexion = connexion;
@@ -22,10 +21,10 @@ public abstract class Repository<T> extends GenericHelper<T> {
 
     String tableName = tableHelper.getTableName();
     String primaryKeyName = tableHelper.getPrimaryKey().stream().map(idName -> "t." + idName + "= :" + idName)
-        .collect(Collectors.joining(" AND ", "", ""));
+            .collect(Collectors.joining(" AND ", "", ""));
 
     retrieveQuery = connexion.getEntityManager()
-        .createQuery("SELECT t FROM " + tableName + " t WHERE " + primaryKeyName, getGenericType());
+            .createQuery("SELECT t FROM " + tableName + " t WHERE " + primaryKeyName, getGenericType());
     retrieveAllQuery = connexion.getEntityManager().createQuery("SELECT t FROM " + tableName + " t", getGenericType());
   }
 

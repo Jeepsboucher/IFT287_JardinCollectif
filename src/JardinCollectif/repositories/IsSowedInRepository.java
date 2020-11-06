@@ -4,11 +4,10 @@ import JardinCollectif.Connexion;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.IsSowedIn;
 
+import javax.persistence.TypedQuery;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
-
-import javax.persistence.TypedQuery;
 
 public class IsSowedInRepository extends Repository<IsSowedIn> {
   private final TypedQuery<IsSowedIn> retrieveFromPlantQuery;
@@ -19,13 +18,13 @@ public class IsSowedInRepository extends Repository<IsSowedIn> {
   public IsSowedInRepository(Connexion connexion) throws ClassNotFoundException, SQLException, IFT287Exception {
     super(connexion);
     retrieveFromPlantQuery = connexion.getEntityManager()
-        .createQuery("SELECT i FROM IsSowedIn i WHERE i.plantName = ?1", IsSowedIn.class);
+            .createQuery("SELECT i FROM IsSowedIn i WHERE i.plantName = ?1", IsSowedIn.class);
     retrieveFromLotQuery = connexion.getEntityManager().createQuery("SELECT i FROM IsSowedIn i WHERE i.lotName = ?1",
-        IsSowedIn.class);
+            IsSowedIn.class);
     deletePlantsOlderThanWithNameInLotQuery = connexion.getEntityManager().createQuery(
-        "DELETE FROM IsSowedIn i WHERE i.plantingDate <= ?1 AND i.plantName = ?2 AND i.lotName = ?3", Long.class);
+            "DELETE FROM IsSowedIn i WHERE i.plantingDate <= ?1 AND i.plantName = ?2 AND i.lotName = ?3", Long.class);
     quantitySowQuery = connexion.getEntityManager()
-        .createQuery("SELECT SUM(i.quantity) FROM IsSowedIn i WHERE i.plantName = ?1", Integer.class);
+            .createQuery("SELECT SUM(i.quantity) FROM IsSowedIn i WHERE i.plantName = ?1", Integer.class);
   }
 
   public List<IsSowedIn> retrieveFromPlant(String plantName) throws IFT287Exception, SQLException {
@@ -41,7 +40,7 @@ public class IsSowedInRepository extends Repository<IsSowedIn> {
   }
 
   public int deletePlantsOlderThanWithNameInLot(Date plantingDate, String plantName, String lotName)
-      throws SQLException, IFT287Exception {
+          throws SQLException, IFT287Exception {
     deletePlantsOlderThanWithNameInLotQuery.setParameter(1, plantingDate);
     deletePlantsOlderThanWithNameInLotQuery.setParameter(2, plantName);
     deletePlantsOlderThanWithNameInLotQuery.setParameter(3, lotName);

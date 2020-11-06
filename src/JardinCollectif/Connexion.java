@@ -1,10 +1,9 @@
 package JardinCollectif;
 
+import javax.persistence.*;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.persistence.*;
 
 /**
  * Gestionnaire d'une connexion avec une BD relationnelle via JDBC.<br>
@@ -12,7 +11,7 @@ import javax.persistence.*;
  * <p>
  * Cette classe ouvre une connexion avec une BD via JDBC.<br>
  * La méthode serveursSupportes() indique les serveurs supportés.<br>
- * 
+ *
  * <pre>
  * Pré-condition
  *   Le driver JDBC approprié doit être accessible.
@@ -21,7 +20,7 @@ import javax.persistence.*;
  *   La connexion est ouverte en mode autocommit false et sérialisable,
  *   (s'il est supporté par le serveur).
  * </pre>
- * 
+ *
  * <br>
  * IFT287 - Exploitation de BD relationnelles et OO
  *
@@ -30,8 +29,8 @@ import javax.persistence.*;
  * @version Version 3.0 - 21 mai 2016
  */
 public class Connexion {
-  private EntityManager em;
   private final EntityManagerFactory emf;
+  private final EntityManager em;
 
   /**
    * Ouverture d'une connexion en mode autocommit false et sérialisable (si
@@ -52,7 +51,7 @@ public class Connexion {
       emf = Persistence.createEntityManagerFactory(bd + ".odb", properties);
     } else if (serveur.equals("dinf")) {
       emf = Persistence.createEntityManagerFactory("objectdb://bd-info2.dinf.usherbrooke.ca:6136/" + user + "/" + bd,
-          properties);
+              properties);
     } else {
       throw new IFT287Exception("Serveur inconnu");
     }
@@ -60,7 +59,7 @@ public class Connexion {
     em = emf.createEntityManager();
 
     System.out
-        .println("Ouverture de la connexion :\n" + "Connecté sur la BD ObjectDB " + bd + " avec l'utilisateur " + user);
+            .println("Ouverture de la connexion :\n" + "Connecté sur la BD ObjectDB " + bd + " avec l'utilisateur " + user);
   }
 
   /**

@@ -2,11 +2,10 @@ package JardinCollectif.repositories.helpers;
 
 import JardinCollectif.IFT287Exception;
 
+import javax.persistence.Id;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Id;
 
 public class TableHelper {
   private final String tableName;

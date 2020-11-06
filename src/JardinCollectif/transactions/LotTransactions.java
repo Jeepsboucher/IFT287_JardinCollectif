@@ -11,10 +11,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class LotTransactions {
-  private Connexion connexion;
+  private final Connexion connexion;
 
-  private LotRepository lotRepository;
-  private IsSowedInRepository isSowedInRepository;
+  private final LotRepository lotRepository;
+  private final IsSowedInRepository isSowedInRepository;
 
   public LotTransactions(Connexion connexion, LotRepository lotRepository, IsSowedInRepository isSowedInRepository) {
     this.connexion = connexion;
@@ -44,7 +44,7 @@ public class LotTransactions {
       connexion.getTransaction().commit();
     } finally {
       if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback(); 
+        connexion.getTransaction().rollback();
     }
   }
 
@@ -70,7 +70,7 @@ public class LotTransactions {
       connexion.getTransaction().commit();
     } finally {
       if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback(); 
+        connexion.getTransaction().rollback();
     }
   }
 

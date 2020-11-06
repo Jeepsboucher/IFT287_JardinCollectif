@@ -1,8 +1,5 @@
 package JardinCollectif.transactions;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import JardinCollectif.Connexion;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.Lot;
@@ -10,11 +7,14 @@ import JardinCollectif.model.Member;
 import JardinCollectif.repositories.LotRepository;
 import JardinCollectif.repositories.MemberRepository;
 
-public class MemberTransactions {
-  private Connexion connexion;
+import java.sql.SQLException;
+import java.util.List;
 
-  private MemberRepository memberRepository;
-  private LotRepository lotRepository;
+public class MemberTransactions {
+  private final Connexion connexion;
+
+  private final MemberRepository memberRepository;
+  private final LotRepository lotRepository;
 
   public MemberTransactions(Connexion connexion, MemberRepository memberRepository, LotRepository lotRepository) {
     this.connexion = connexion;
@@ -23,7 +23,7 @@ public class MemberTransactions {
   }
 
   public void addMember(long memberId, String firstName, String lastName, String password)
-      throws SQLException, IFT287Exception {
+          throws SQLException, IFT287Exception {
     try {
       connexion.getTransaction().begin();
 
@@ -127,7 +127,7 @@ public class MemberTransactions {
 
       if (lot.registrations.size() + lot.pendingRegistrations.size() >= lot.maxMemberCount) {
         throw new IFT287Exception(
-            "Nombre maximum de membre inscrit au lot atteint. Veuillez refuser les demandes en cours ou retirer des membres au lot.");
+                "Nombre maximum de membre inscrit au lot atteint. Veuillez refuser les demandes en cours ou retirer des membres au lot.");
       }
 
       member.pendingRegistrations.add(lot);

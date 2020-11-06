@@ -1,11 +1,10 @@
 package JardinCollectif.model;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 public class Lot {

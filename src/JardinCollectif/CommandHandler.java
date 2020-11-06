@@ -1,15 +1,14 @@
 package JardinCollectif;
 
+import JardinCollectif.annotations.Command;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.Class;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import JardinCollectif.annotations.Command;
 
 public abstract class CommandHandler {
   private final HashMap<String, Method> dispatcher;
