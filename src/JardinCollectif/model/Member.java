@@ -1,7 +1,11 @@
 package JardinCollectif.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Member {
@@ -15,6 +19,12 @@ public class Member {
   public String lastName;
 
   public String password;
+
+  @ManyToMany(mappedBy = "registrations")
+  public List<Lot> acceptedRegistrations;
+
+  @OneToMany
+  public List<Lot> pendingRegistrations;
 
   public Member(long memberId, boolean isAdmin, String firstName, String lastName, String password) {
     this.memberId = memberId;
