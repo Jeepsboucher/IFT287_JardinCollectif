@@ -1,23 +1,23 @@
 package JardinCollectif.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import java.util.LinkedList;
 import java.util.List;
 
-@Entity
+import org.bson.Document;
+
 public class Lot {
-  @Id
   public String lotName;
 
   public int maxMemberCount;
 
-  @ManyToMany
   public List<Member> registrations;
 
-  @ManyToMany
   public List<Member> pendingRegistrations;
+
+  public Lot(Document d) {
+    this.lotName = d.getString("lotName");
+    this.maxMemberCount = d.getInteger("maxMemberCount");
+  }
 
   public Lot(String lotName, int maxMembercount) {
     this.lotName = lotName;
@@ -25,5 +25,9 @@ public class Lot {
 
     this.registrations = new LinkedList<>();
     this.pendingRegistrations = new LinkedList<>();
+  }
+
+  public Document toDocument() {
+    return new Document().append("lotName", lotName).append("maxMemberCount", maxMemberCount);
   }
 }

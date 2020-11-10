@@ -1,14 +1,11 @@
 package JardinCollectif.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import java.util.LinkedList;
 import java.util.List;
 
-@Entity
+import org.bson.Document;
+
 public class Member {
-  @Id
   public long memberId;
 
   public boolean isAdmin;
@@ -19,11 +16,17 @@ public class Member {
 
   public String password;
 
-  @ManyToMany(mappedBy = "registrations")
   public List<Lot> acceptedRegistrations;
 
-  @ManyToMany
   public List<Lot> pendingRegistrations;
+
+  public Member(Document d) {
+    this.memberId = d.getInteger("memberId");
+    this.isAdmin = d.getBoolean("isAdmin");
+    this.firstName = d.getString("firstName");
+    this.lastName = d.getString("lastName");
+    this.password = d.getString("password");
+  }
 
   public Member(long memberId, boolean isAdmin, String firstName, String lastName, String password) {
     this.memberId = memberId;
@@ -34,5 +37,10 @@ public class Member {
 
     this.acceptedRegistrations = new LinkedList<>();
     this.pendingRegistrations = new LinkedList<>();
+  }
+
+  public Document toDocument() {
+    return new Document().append("memberId", memberId).append("isAdmin", isAdmin).append("firstName", firstName)
+        .append("lastName", lastName).append("password", password);
   }
 }

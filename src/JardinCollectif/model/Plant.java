@@ -1,17 +1,23 @@
 package JardinCollectif.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.bson.Document;
 
-@Entity
 public class Plant {
-  @Id
   public String plantName;
 
   public int cultivationTime;
 
+  public Plant(Document d) {
+    this.plantName = d.getString("plantName");
+    this.cultivationTime = d.getInteger("cultivationTime");
+  }
+
   public Plant(String plantName, int cultivationTime) {
     this.plantName = plantName;
     this.cultivationTime = cultivationTime;
+  }
+
+  public Document toDocument() {
+    return new Document().append("plantName", plantName).append("cultivationTime", cultivationTime);
   }
 }
