@@ -1,9 +1,12 @@
 package JardinCollectif;
 
-import javax.persistence.*;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
+import com.mongodb.client.MongoDatabase;
 
 /**
  * Gestionnaire d'une connexion avec une BD relationnelle via JDBC.<br>
@@ -29,8 +32,8 @@ import java.util.Map;
  * @version Version 3.0 - 21 mai 2016
  */
 public class Connexion {
-  private final EntityManagerFactory emf;
-  private final EntityManager em;
+  private MongoClient client;
+  private MongoDatabase database;
 
   /**
    * Ouverture d'une connexion en mode autocommit false et sérialisable (si
@@ -48,45 +51,40 @@ public class Connexion {
     properties.put("javax.persistence.jdbc.password", pass);
 
     if (serveur.equals("local")) {
-      emf = Persistence.createEntityManagerFactory(bd + ".odb", properties);
+      client = new MongoClient();
     } else if (serveur.equals("dinf")) {
-      emf = Persistence.createEntityManagerFactory("objectdb://bd-info2.dinf.usherbrooke.ca:6136/" + user + "/" + bd,
-              properties);
+      MongoClientURI uri = new MongoClientURI(
+          "mongodb://" + user + ":" + pass + "@bd-info2.dinf.usherbrooke.ca:27017/" + bd + "?ssl=false");
+      client = new MongoClient(uri);
     } else {
       throw new IFT287Exception("Serveur inconnu");
     }
 
-    em = emf.createEntityManager();
+    database = client.getDatabase(bd);
 
     System.out
-            .println("Ouverture de la connexion :\n" + "Connecté sur la BD ObjectDB " + bd + " avec l'utilisateur " + user);
-  }
-
-  /**
-   * Retourne la liste des serveurs supportés par ce gestionnaire de connexions
-   */
-  public static String serveursSupportes() {
-    return "local : PostgreSQL installé localement\n" + "dinf  : PostgreSQL installé sur les serveurs du département\n";
+        .println("Ouverture de la connexion :\n" + "Connecté sur la BD MongoDB " + bd + " avec l'utilisateur " + user);
   }
 
   /**
    * Fermeture d'une connexion
    */
   public void close() throws SQLException {
-    em.clear();
-    em.close();
-    emf.close();
+    client.close();
     System.out.println("Connexion fermée");
   }
 
-  public EntityTransaction getTransaction() {
-    return em.getTransaction();
+  /**
+   * retourne la Connection MongoDB
+   */
+  public MongoClient getConnection() {
+    return client;
   }
 
   /**
-   * Retourne la Connection JDBC
+   * Retourne la DataBase MongoDB
    */
-  public EntityManager getEntityManager() {
-    return em;
+  public MongoDatabase getDatabase() {
+    return database;
   }
 }
