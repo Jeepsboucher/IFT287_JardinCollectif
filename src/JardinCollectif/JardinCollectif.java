@@ -37,7 +37,7 @@ import java.io.*;
  * </pre>
  */
 public class JardinCollectif {
-  private static Connexion cx;
+  private static Connection cx;
   private static JardinCollectifCommandHandler commandHandler;
 
   /**
@@ -55,7 +55,7 @@ public class JardinCollectif {
     try {
       // Il est possible que vous ayez à déplacer la connexion ailleurs.
       // N'hésitez pas à le faire!
-      cx = new Connexion(args[0], args[1], args[2], args[3]);
+      cx = new Connection(args[0], args[1], args[2], args[3]);
       commandHandler = new JardinCollectifCommandHandler(cx);
 
       BufferedReader reader = ouvrirFichier(args);
@@ -77,14 +77,7 @@ public class JardinCollectif {
     try {
       commandHandler.handleCommand(transaction);
     } catch (Exception e) {
-      System.out.println(" " + e.toString());
-      // Ce rollback est ici seulement pour vous aider et éviter des problèmes lors de
-      // la correction
-      // automatique. En théorie, il ne sert à rien et ne devrait pas apparaître ici
-      // dans un programme
-      // fini et fonctionnel sans bogues.
-      if (cx.getTransaction().isActive())
-        cx.getTransaction().rollback();
+      System.out.println("** " + e.toString());
     }
   }
 

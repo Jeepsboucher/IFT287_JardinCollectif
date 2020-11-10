@@ -1,6 +1,5 @@
 package JardinCollectif.transactions;
 
-import JardinCollectif.Connexion;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.IsSowedIn;
 import JardinCollectif.model.Lot;
@@ -17,16 +16,14 @@ import java.time.Instant;
 import java.util.List;
 
 public class PlantTransactions {
-  private final Connexion connexion;
 
   private final PlantRepository plantRepository;
   private final LotRepository lotRepository;
   private final MemberRepository memberRepository;
   private final IsSowedInRepository isSowedInRepository;
 
-  public PlantTransactions(Connexion connexion, PlantRepository plantRepository, LotRepository lotRepository,
-                           MemberRepository memberRepository, IsSowedInRepository isSowedInRepository) {
-    this.connexion = connexion;
+  public PlantTransactions(PlantRepository plantRepository, LotRepository lotRepository,
+      MemberRepository memberRepository, IsSowedInRepository isSowedInRepository) {
     this.plantRepository = plantRepository;
     this.lotRepository = lotRepository;
     this.memberRepository = memberRepository;
@@ -35,7 +32,6 @@ public class PlantTransactions {
 
   public void addPlant(String plantName, int cultivationTime) throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante doit avoir un nom.");
@@ -52,16 +48,13 @@ public class PlantTransactions {
       Plant newPlant = new Plant(plantName, cultivationTime);
       plantRepository.create(newPlant);
 
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 
   public void removePlant(String plantName) throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
@@ -78,17 +71,14 @@ public class PlantTransactions {
 
       plantRepository.delete(toDelete);
 
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 
   public void sowPlantInLot(String plantName, String lotName, long memberId, int quantity, Date plantingDate)
-          throws SQLException, IFT287Exception {
+      throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
@@ -124,16 +114,13 @@ public class PlantTransactions {
       IsSowedIn newIsSowedIn = new IsSowedIn(-1, quantity, plantingDate, memberId, lotName, plantName);
       isSowedInRepository.create(newIsSowedIn);
 
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 
   public void harvestPlant(String plantName, String lotName, long memberId) throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante doit avoir un nom.");
@@ -163,18 +150,16 @@ public class PlantTransactions {
 
       Plant plant = plantRepository.retrieve(plantName);
       Date plantationDate = new Date(
-              java.util.Date.from(Instant.now().minusSeconds(plant.cultivationTime * 24 * 60 * 60)).getTime());
+          java.util.Date.from(Instant.now().minusSeconds(plant.cultivationTime * 24 * 60 * 60)).getTime());
 
       boolean hasHarvestedSomething = isSowedInRepository.deletePlantsOlderThanWithNameInLot(plantationDate, plantName,
-              lotName) > 0;
+          lotName) > 0;
       if (!hasHarvestedSomething) {
         throw new IFT287Exception("Aucun exemplaire de la plante spécifiée n'est prêt à être récolté.");
       }
 
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 

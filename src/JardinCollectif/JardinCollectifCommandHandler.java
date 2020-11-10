@@ -4,7 +4,6 @@ import JardinCollectif.repositories.IsSowedInRepository;
 import JardinCollectif.repositories.LotRepository;
 import JardinCollectif.repositories.MemberRepository;
 import JardinCollectif.repositories.PlantRepository;
-import JardinCollectif.repositories.Repository;
 import JardinCollectif.transactions.LotTransactions;
 import JardinCollectif.transactions.MemberTransactions;
 import JardinCollectif.transactions.PlantTransactions;
@@ -19,25 +18,24 @@ import java.sql.Date;
 import java.util.List;
 
 public class JardinCollectifCommandHandler extends CommandHandler {
-  private final Connexion connexion;
+  private final Connection connection;
 
   private final MemberTransactions memberTransactions;
   private final LotTransactions lotTransactions;
   private final PlantTransactions plantTransactions;
 
-  protected JardinCollectifCommandHandler(Connexion connexion)
+  protected JardinCollectifCommandHandler(Connection connection)
       throws ClassNotFoundException, SQLException, IFT287Exception {
-    this.connexion = connexion;
+    this.connection = connection;
 
-    MemberRepository memberRepository = new MemberRepository(connexion);
-    LotRepository lotRepository = new LotRepository(connexion);
-    PlantRepository plantRepository = new PlantRepository(connexion);
-    IsSowedInRepository isSowedInRepository = new IsSowedInRepository(connexion);
+    MemberRepository memberRepository = new MemberRepository(connection);
+    LotRepository lotRepository = new LotRepository(connection);
+    PlantRepository plantRepository = new PlantRepository(connection);
+    IsSowedInRepository isSowedInRepository = new IsSowedInRepository(connection);
 
-    memberTransactions = new MemberTransactions(connexion, memberRepository, lotRepository);
-    lotTransactions = new LotTransactions(connexion, lotRepository, isSowedInRepository);
-    plantTransactions = new PlantTransactions(connexion, plantRepository, lotRepository, memberRepository,
-        isSowedInRepository);
+    memberTransactions = new MemberTransactions(memberRepository, lotRepository);
+    lotTransactions = new LotTransactions(lotRepository, isSowedInRepository);
+    plantTransactions = new PlantTransactions(plantRepository, lotRepository, memberRepository, isSowedInRepository);
   }
 
   @Command("inscrireMembre")
@@ -152,7 +150,7 @@ public class JardinCollectifCommandHandler extends CommandHandler {
 
   @Command("quitter")
   public void close() throws SQLException {
-    connexion.close();
+    connection.close();
     System.exit(0);
   }
 }

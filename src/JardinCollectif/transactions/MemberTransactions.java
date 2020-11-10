@@ -1,6 +1,5 @@
 package JardinCollectif.transactions;
 
-import JardinCollectif.Connexion;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.Lot;
 import JardinCollectif.model.Member;
@@ -11,21 +10,18 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class MemberTransactions {
-  private final Connexion connexion;
 
   private final MemberRepository memberRepository;
   private final LotRepository lotRepository;
 
-  public MemberTransactions(Connexion connexion, MemberRepository memberRepository, LotRepository lotRepository) {
-    this.connexion = connexion;
+  public MemberTransactions(MemberRepository memberRepository, LotRepository lotRepository) {
     this.memberRepository = memberRepository;
     this.lotRepository = lotRepository;
   }
 
   public void addMember(long memberId, String firstName, String lastName, String password)
-          throws SQLException, IFT287Exception {
+      throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       if (firstName == null || firstName.isEmpty()) {
         throw new IFT287Exception("Le membre doit avoir un prénom.");
@@ -49,16 +45,13 @@ public class MemberTransactions {
 
       Member newMember = new Member(memberId, false, firstName, lastName, password);
       memberRepository.create(newMember);
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 
   public void removeMember(long memberId) throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       Member toDelete = memberRepository.retrieve(memberId);
       if (toDelete == null) {
@@ -70,16 +63,13 @@ public class MemberTransactions {
       }
 
       memberRepository.delete(toDelete);
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 
   public void promoteToAdmin(long memberId) throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       if (!memberRepository.exists(memberId)) {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
@@ -92,16 +82,13 @@ public class MemberTransactions {
 
       toUpdate.isAdmin = true;
 
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 
   public void requestToJoinLot(long memberId, String lotName) throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       if (lotName == null || lotName.isEmpty()) {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
@@ -127,22 +114,19 @@ public class MemberTransactions {
 
       if (lot.registrations.size() + lot.pendingRegistrations.size() >= lot.maxMemberCount) {
         throw new IFT287Exception(
-                "Nombre maximum de membre inscrit au lot atteint. Veuillez refuser les demandes en cours ou retirer des membres au lot.");
+            "Nombre maximum de membre inscrit au lot atteint. Veuillez refuser les demandes en cours ou retirer des membres au lot.");
       }
 
       member.pendingRegistrations.add(lot);
       lot.pendingRegistrations.add(member);
 
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 
   public void acceptRequestToJoinLot(String lotName, long memberId) throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       if (lotName == null || lotName.isEmpty()) {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
@@ -168,16 +152,13 @@ public class MemberTransactions {
       member.acceptedRegistrations.add(lot);
       lot.registrations.add(member);
 
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 
   public void denyRequestToJoinLot(String lotName, long memberId) throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       if (lotName == null || lotName.isEmpty()) {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
@@ -200,10 +181,8 @@ public class MemberTransactions {
       member.pendingRegistrations.remove(lot);
       lot.pendingRegistrations.remove(member);
 
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 

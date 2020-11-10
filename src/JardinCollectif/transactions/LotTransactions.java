@@ -1,6 +1,5 @@
 package JardinCollectif.transactions;
 
-import JardinCollectif.Connexion;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.IsSowedIn;
 import JardinCollectif.model.Lot;
@@ -11,20 +10,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class LotTransactions {
-  private final Connexion connexion;
 
   private final LotRepository lotRepository;
   private final IsSowedInRepository isSowedInRepository;
 
-  public LotTransactions(Connexion connexion, LotRepository lotRepository, IsSowedInRepository isSowedInRepository) {
-    this.connexion = connexion;
+  public LotTransactions(LotRepository lotRepository, IsSowedInRepository isSowedInRepository) {
     this.lotRepository = lotRepository;
     this.isSowedInRepository = isSowedInRepository;
   }
 
   public void addLot(String lotName, int maxMembercount) throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       if (lotName == null || lotName.isEmpty()) {
         throw new IFT287Exception("Le lot doit avoir un nom.");
@@ -41,16 +37,13 @@ public class LotTransactions {
       Lot newLot = new Lot(lotName, maxMembercount);
       lotRepository.create(newLot);
 
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 
   public void removeLot(String lotName) throws SQLException, IFT287Exception {
     try {
-      connexion.getTransaction().begin();
 
       if (lotName == null || lotName.isEmpty()) {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
@@ -67,10 +60,8 @@ public class LotTransactions {
 
       lotRepository.delete(toDelete);
 
-      connexion.getTransaction().commit();
-    } finally {
-      if (connexion.getTransaction().isActive())
-        connexion.getTransaction().rollback();
+    } catch (Exception e) {
+      throw e;
     }
   }
 
