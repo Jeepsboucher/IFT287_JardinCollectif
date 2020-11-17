@@ -3,8 +3,10 @@ package JardinCollectif.transactions;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.Lot;
 import JardinCollectif.model.Member;
+import JardinCollectif.model.RequestToJoin;
 import JardinCollectif.repositories.LotRepository;
 import JardinCollectif.repositories.MemberRepository;
+import JardinCollectif.repositories.RequestToJoinRepository;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -13,10 +15,13 @@ public class MemberTransactions {
 
   private final MemberRepository memberRepository;
   private final LotRepository lotRepository;
+  private final RequestToJoinRepository requestToJoinRepository;
 
-  public MemberTransactions(MemberRepository memberRepository, LotRepository lotRepository) {
+  public MemberTransactions(MemberRepository memberRepository, LotRepository lotRepository,
+      RequestToJoinRepository requestToJoinRepository) {
     this.memberRepository = memberRepository;
     this.lotRepository = lotRepository;
+    this.requestToJoinRepository = requestToJoinRepository;
   }
 
   public void addMember(long memberId, String firstName, String lastName, String password)
@@ -58,7 +63,7 @@ public class MemberTransactions {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
 
-      if (toDelete.acceptedRegistrations.size() > 0 || toDelete.pendingRegistrations.size() > 0) {
+      if (requestToJoinRepository.isMemberRegisteredToALot(memberId)) {
         throw new IFT287Exception("Le membre spécifié est le dernier membre d'un lot.");
       }
 
@@ -81,6 +86,7 @@ public class MemberTransactions {
       }
 
       toUpdate.isAdmin = true;
+      memberRepository.update(toUpdate);
 
     } catch (Exception e) {
       throw e;
@@ -94,31 +100,26 @@ public class MemberTransactions {
         throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
       }
 
-      Lot lot = lotRepository.retrieve(lotName);
-      if (lot == null) {
+      if (!lotRepository.exists(lotName)) {
         throw new IFT287Exception("Le lot spécifié n'existe pas.");
       }
 
-      Member member = memberRepository.retrieve(memberId);
-      if (member == null) {
+      if (!memberRepository.exists(memberId)) {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
 
-      if (lot.pendingRegistrations.contains(member)) {
+      if (requestToJoinRepository.exists(memberId, lotName)) {
         throw new IFT287Exception("Le membre spécifié a déjà une requête pour rejoindre le lot spécifié.");
       }
 
-      if (member.acceptedRegistrations.contains(lot)) {
-        throw new IFT287Exception("Le membre spécifié fait déjà du lot spécifié.");
-      }
-
-      if (lot.registrations.size() + lot.pendingRegistrations.size() >= lot.maxMemberCount) {
+      Lot lot = lotRepository.retrieve(lotName);
+      if (requestToJoinRepository.countMembershipInLot(lotName) == lot.maxMemberCount) {
         throw new IFT287Exception(
             "Nombre maximum de membre inscrit au lot atteint. Veuillez refuser les demandes en cours ou retirer des membres au lot.");
       }
 
-      member.pendingRegistrations.add(lot);
-      lot.pendingRegistrations.add(member);
+      RequestToJoin newRequestToJoin = new RequestToJoin(memberId, lotName, false);
+      requestToJoinRepository.create(newRequestToJoin);
 
     } catch (Exception e) {
       throw e;
@@ -142,15 +143,12 @@ public class MemberTransactions {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
 
-      if (!lot.pendingRegistrations.contains(member)) {
+      if (!requestToJoinRepository.exists(memberId, lotName)) {
         throw new IFT287Exception("La requête pour rejoindre le lot spécifié n'existe pas.");
       }
 
-      member.pendingRegistrations.remove(lot);
-      lot.pendingRegistrations.remove(member);
-
-      member.acceptedRegistrations.add(lot);
-      lot.registrations.add(member);
+      RequestToJoin updatedRequestToJoin = new RequestToJoin(memberId, lotName, true);
+      requestToJoinRepository.update(updatedRequestToJoin);
 
     } catch (Exception e) {
       throw e;
@@ -174,12 +172,12 @@ public class MemberTransactions {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
 
-      if (!lot.pendingRegistrations.contains(member)) {
+      if (!requestToJoinRepository.exists(memberId, lotName)) {
         throw new IFT287Exception("La requête pour rejoindre le lot spécifié n'existe pas.");
       }
 
-      member.pendingRegistrations.remove(lot);
-      lot.pendingRegistrations.remove(member);
+      requestToJoinRepository.delete(memberId, lotName);
+
 
     } catch (Exception e) {
       throw e;

@@ -4,6 +4,7 @@ import JardinCollectif.repositories.IsSowedInRepository;
 import JardinCollectif.repositories.LotRepository;
 import JardinCollectif.repositories.MemberRepository;
 import JardinCollectif.repositories.PlantRepository;
+import JardinCollectif.repositories.RequestToJoinRepository;
 import JardinCollectif.transactions.LotTransactions;
 import JardinCollectif.transactions.MemberTransactions;
 import JardinCollectif.transactions.PlantTransactions;
@@ -32,9 +33,10 @@ public class JardinCollectifCommandHandler extends CommandHandler {
     LotRepository lotRepository = new LotRepository(connection);
     PlantRepository plantRepository = new PlantRepository(connection);
     IsSowedInRepository isSowedInRepository = new IsSowedInRepository(connection);
+    RequestToJoinRepository requestToJoinRepository = new RequestToJoinRepository(connection);
 
-    memberTransactions = new MemberTransactions(memberRepository, lotRepository);
-    lotTransactions = new LotTransactions(lotRepository, isSowedInRepository);
+    memberTransactions = new MemberTransactions(memberRepository, lotRepository, requestToJoinRepository);
+    lotTransactions = new LotTransactions(lotRepository, isSowedInRepository, requestToJoinRepository);
     plantTransactions = new PlantTransactions(plantRepository, lotRepository, memberRepository, isSowedInRepository);
   }
 

@@ -5,6 +5,7 @@ import JardinCollectif.model.IsSowedIn;
 import JardinCollectif.model.Lot;
 import JardinCollectif.repositories.IsSowedInRepository;
 import JardinCollectif.repositories.LotRepository;
+import JardinCollectif.repositories.RequestToJoinRepository;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -13,10 +14,13 @@ public class LotTransactions {
 
   private final LotRepository lotRepository;
   private final IsSowedInRepository isSowedInRepository;
+  private final RequestToJoinRepository requestToJoinRepository;
 
-  public LotTransactions(LotRepository lotRepository, IsSowedInRepository isSowedInRepository) {
+  public LotTransactions(LotRepository lotRepository, IsSowedInRepository isSowedInRepository,
+      RequestToJoinRepository requestToJoinRepository) {
     this.lotRepository = lotRepository;
     this.isSowedInRepository = isSowedInRepository;
+    this.requestToJoinRepository = requestToJoinRepository;
   }
 
   public void addLot(String lotName, int maxMembercount) throws SQLException, IFT287Exception {
@@ -58,6 +62,7 @@ public class LotTransactions {
         throw new IFT287Exception("Le lot spécifié contient encore des plantes.");
       }
 
+      requestToJoinRepository.deleteRequestToJoinLot(lotName);
       lotRepository.delete(toDelete);
 
     } catch (Exception e) {
