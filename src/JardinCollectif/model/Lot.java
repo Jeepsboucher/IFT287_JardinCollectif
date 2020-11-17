@@ -1,19 +1,19 @@
 package JardinCollectif.model;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.bson.Document;
 
-public class Lot {
-  public String lotName;
+import JardinCollectif.annotations.Column;
+import JardinCollectif.annotations.Entity;
+import JardinCollectif.annotations.Initializer;
 
+@Entity
+public class Lot {
+  @Column(primaryKey = true)
+  public String lotName;
+  @Column
   public int maxMemberCount;
 
-  public List<Member> registrations;
-
-  public List<Member> pendingRegistrations;
-
+  @Initializer
   public Lot(Document d) {
     this.lotName = d.getString("lotName");
     this.maxMemberCount = d.getInteger("maxMemberCount");
@@ -22,9 +22,6 @@ public class Lot {
   public Lot(String lotName, int maxMembercount) {
     this.lotName = lotName;
     this.maxMemberCount = maxMembercount;
-
-    this.registrations = new LinkedList<>();
-    this.pendingRegistrations = new LinkedList<>();
   }
 
   public Document toDocument() {

@@ -1,27 +1,27 @@
 package JardinCollectif.model;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.bson.Document;
 
+import JardinCollectif.annotations.Column;
+import JardinCollectif.annotations.Entity;
+import JardinCollectif.annotations.Initializer;
+
+@Entity
 public class Member {
+  @Column(primaryKey = true)
   public long memberId;
-
+  @Column
   public boolean isAdmin;
-
+  @Column
   public String firstName;
-
+  @Column
   public String lastName;
-
+  @Column
   public String password;
 
-  public List<Lot> acceptedRegistrations;
-
-  public List<Lot> pendingRegistrations;
-
+  @Initializer
   public Member(Document d) {
-    this.memberId = d.getInteger("memberId");
+    this.memberId = d.getLong("memberId");
     this.isAdmin = d.getBoolean("isAdmin");
     this.firstName = d.getString("firstName");
     this.lastName = d.getString("lastName");
@@ -34,9 +34,6 @@ public class Member {
     this.firstName = firstName;
     this.lastName = lastName;
     this.password = password;
-
-    this.acceptedRegistrations = new LinkedList<>();
-    this.pendingRegistrations = new LinkedList<>();
   }
 
   public Document toDocument() {
