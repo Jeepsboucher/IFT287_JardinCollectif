@@ -1,11 +1,11 @@
 package JardinCollectif.repositories;
 
-import JardinCollectif.Connexion;
+import JardinCollectif.Connection;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.Member;
 
 public class MemberRepository extends Repository<Member> {
-  public MemberRepository(Connexion connexion) throws ClassNotFoundException, IFT287Exception {
-    super(connexion);
+  public MemberRepository(Connection connection) throws ClassNotFoundException, IFT287Exception {
+    super(connection);
   }
 }
