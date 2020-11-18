@@ -15,6 +15,7 @@ import org.bson.Document;
 
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Aggregates.*;
+import static com.mongodb.client.model.Projections.*;
 
 public class RequestToJoinRepository extends Repository<RequestToJoin> {
   public RequestToJoinRepository(Connection connection) throws ClassNotFoundException, SQLException, IFT287Exception {
@@ -35,7 +36,7 @@ public class RequestToJoinRepository extends Repository<RequestToJoin> {
 
   public List<Member> retrieveMembersInLot(String lotName) {
     MongoCursor<Document> testCollection = collection.aggregate(Arrays.asList(match(eq("requestStatus", true)),
-        match(eq("lotName", lotName)), lookup("Member", "memberId", "memberId", "member"))).iterator();
+        match(eq("lotName", lotName)), lookup("Member", "memberId", "memberId", "member"), unwind("$member"), replaceRoot("$member"))).iterator();
 
     List<Member> members = new LinkedList<Member>();
     try {
