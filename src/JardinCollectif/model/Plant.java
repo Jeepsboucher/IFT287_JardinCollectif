@@ -23,8 +23,4 @@ public class Plant {
     this.plantName = plantName;
     this.cultivationTime = cultivationTime;
   }
-
-  public Document toDocument() {
-    return new Document().append("plantName", plantName).append("cultivationTime", cultivationTime);
-  }
 }

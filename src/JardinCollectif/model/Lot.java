@@ -23,8 +23,4 @@ public class Lot {
     this.lotName = lotName;
     this.maxMemberCount = maxMembercount;
   }
-
-  public Document toDocument() {
-    return new Document().append("lotName", lotName).append("maxMemberCount", maxMemberCount);
-  }
 }

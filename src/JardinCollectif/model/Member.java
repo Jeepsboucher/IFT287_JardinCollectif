@@ -35,9 +35,4 @@ public class Member {
     this.lastName = lastName;
     this.password = password;
   }
-
-  public Document toDocument() {
-    return new Document().append("memberId", memberId).append("isAdmin", isAdmin).append("firstName", firstName)
-        .append("lastName", lastName).append("password", password);
-  }
 }
