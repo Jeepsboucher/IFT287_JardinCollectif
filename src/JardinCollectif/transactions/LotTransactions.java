@@ -62,7 +62,7 @@ public class LotTransactions {
         throw new IFT287Exception("Le lot spécifié contient encore des plantes.");
       }
 
-      requestToJoinRepository.deleteRequestToJoinLot(lotName);
+      requestToJoinRepository.deleteRequestsToJoinLot(lotName);
       lotRepository.delete(toDelete);
 
     } catch (Exception e) {
