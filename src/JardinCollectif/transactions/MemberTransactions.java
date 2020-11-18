@@ -178,7 +178,6 @@ public class MemberTransactions {
 
       requestToJoinRepository.delete(memberId, lotName);
 
-
     } catch (Exception e) {
       throw e;
     }
@@ -198,6 +197,6 @@ public class MemberTransactions {
       throw new IFT287Exception("Le lot spécifié n'existe pas.");
     }
 
-    return lot.registrations;
+    return requestToJoinRepository.retrieveMembersInLot(lotName);
   }
 }
