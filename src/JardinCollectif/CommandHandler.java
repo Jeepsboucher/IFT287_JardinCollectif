@@ -4,7 +4,9 @@ import JardinCollectif.annotations.Command;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,11 @@ import java.util.StringTokenizer;
 
 public abstract class CommandHandler {
   private final HashMap<String, Method> dispatcher;
+  private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+  static {
+    dateFormat.setLenient(false);
+  }
 
   protected CommandHandler() {
     dispatcher = new HashMap<>();
@@ -68,8 +75,8 @@ public abstract class CommandHandler {
     if (tokenizer.hasMoreElements()) {
       String token = tokenizer.nextToken();
       try {
-        return Date.valueOf(token);
-      } catch (IllegalArgumentException e) {
+        return dateFormat.parse(token);
+      } catch (ParseException e) {
         throw new IFT287Exception("Date dans un format invalide - \"" + token + "\"");
       }
     } else {
