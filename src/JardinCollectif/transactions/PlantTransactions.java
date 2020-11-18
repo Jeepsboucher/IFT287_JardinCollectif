@@ -9,6 +9,7 @@ import JardinCollectif.repositories.IsSowedInRepository;
 import JardinCollectif.repositories.LotRepository;
 import JardinCollectif.repositories.MemberRepository;
 import JardinCollectif.repositories.PlantRepository;
+import JardinCollectif.repositories.RequestToJoinRepository;
 
 import java.sql.Date;
 import java.sql.SQLException;
@@ -21,13 +22,16 @@ public class PlantTransactions {
   private final LotRepository lotRepository;
   private final MemberRepository memberRepository;
   private final IsSowedInRepository isSowedInRepository;
+  private final RequestToJoinRepository requestToJoinRepository;
 
   public PlantTransactions(PlantRepository plantRepository, LotRepository lotRepository,
-      MemberRepository memberRepository, IsSowedInRepository isSowedInRepository) {
+      MemberRepository memberRepository, IsSowedInRepository isSowedInRepository,
+      RequestToJoinRepository requestToJoinRepository) {
     this.plantRepository = plantRepository;
     this.lotRepository = lotRepository;
     this.memberRepository = memberRepository;
     this.isSowedInRepository = isSowedInRepository;
+    this.requestToJoinRepository = requestToJoinRepository;
   }
 
   public void addPlant(String plantName, int cultivationTime) throws SQLException, IFT287Exception {
@@ -105,9 +109,9 @@ public class PlantTransactions {
       if (quantity < 1) {
         throw new IFT287Exception("La quantité doit être d'au moins un.");
       }
-
-      if (!lot.registrations.contains(member)) {
-        throw new IFT287Exception("Le membre spécifié n'a pas accès au lot spécifié.");
+      if (!requestToJoinRepository.exists(memberId, lotName)
+          || !requestToJoinRepository.retrieve(memberId, lotName).requestStatus) {
+        throw new IFT287Exception("Le membre spécifié n'a pa accès au lot spécifié.");
       }
 
       // Id will be ignored since it's auto-generated.
@@ -144,8 +148,9 @@ public class PlantTransactions {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
 
-      if (!lot.registrations.contains(member)) {
-        throw new IFT287Exception("Le membre spécifié n'a pas accès au lot spécifié.");
+      if (!requestToJoinRepository.exists(memberId, lotName)
+          || !requestToJoinRepository.retrieve(memberId, lotName).requestStatus) {
+        throw new IFT287Exception("Le membre spécifié n'a pa accès au lot spécifié.");
       }
 
       Plant plant = plantRepository.retrieve(plantName);
