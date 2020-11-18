@@ -19,9 +19,9 @@ public class RequestToJoin {
 
     @Initializer
     public RequestToJoin(Document d) {
-        this.memberId = d.getLong("isSowedInId");
-        this.lotName = d.getString("quantity");
-        this.requestStatus = d.getBoolean("memberId");
+        this.memberId = d.getLong("memberId");
+        this.lotName = d.getString("lotName");
+        this.requestStatus = d.getBoolean("requestStatus");
     }
 
     public RequestToJoin(long memberId, String lotName, boolean requestStatus) {
