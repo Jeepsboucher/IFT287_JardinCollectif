@@ -3,16 +3,14 @@ package JardinCollectif.repositories;
 import JardinCollectif.Connection;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.IsSowedIn;
+import com.mongodb.client.MongoCursor;
+import org.bson.Document;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.mongodb.client.MongoCursor;
-
 import static com.mongodb.client.model.Filters.*;
-
-import org.bson.Document;
 
 public class IsSowedInRepository extends Repository<IsSowedIn> {
   public IsSowedInRepository(Connection connection) throws ClassNotFoundException, IFT287Exception {
@@ -46,10 +44,10 @@ public class IsSowedInRepository extends Repository<IsSowedIn> {
   }
 
   public long deletePlantsOlderThanWithNameInLot(Date plantingDate, String plantName, String lotName)
-      throws IFT287Exception {
+          throws IFT287Exception {
     return collection
-        .deleteMany(and(eq("plantName", plantName), and(eq("lotName", lotName), lte("plantingDate", plantingDate))))
-        .getDeletedCount();
+            .deleteMany(and(eq("plantName", plantName), and(eq("lotName", lotName), lte("plantingDate", plantingDate))))
+            .getDeletedCount();
   }
 
   public long getQuantitySowed(String plantName) throws IFT287Exception {

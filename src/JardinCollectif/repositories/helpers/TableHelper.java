@@ -10,8 +10,8 @@ import java.util.List;
 
 public class TableHelper {
   private final String tableName;
-  private List<ColumnHelper> columns;
-  private List<ColumnHelper> primaryKey;
+  private final List<ColumnHelper> columns;
+  private final List<ColumnHelper> primaryKey;
 
   public TableHelper(Class entityType) throws IFT287Exception {
     Entity table = (Entity) entityType.getAnnotation(Entity.class);

@@ -17,14 +17,14 @@ public class MemberTransactions {
   private final RequestToJoinRepository requestToJoinRepository;
 
   public MemberTransactions(MemberRepository memberRepository, LotRepository lotRepository,
-      RequestToJoinRepository requestToJoinRepository) {
+                            RequestToJoinRepository requestToJoinRepository) {
     this.memberRepository = memberRepository;
     this.lotRepository = lotRepository;
     this.requestToJoinRepository = requestToJoinRepository;
   }
 
   public void addMember(long memberId, String firstName, String lastName, String password)
-      throws IFT287Exception {
+          throws IFT287Exception {
     try {
 
       if (firstName == null || firstName.isEmpty()) {
@@ -114,7 +114,7 @@ public class MemberTransactions {
       Lot lot = lotRepository.retrieve(lotName);
       if (requestToJoinRepository.countMembershipInLot(lotName) == lot.maxMemberCount) {
         throw new IFT287Exception(
-            "Nombre maximum de membre inscrit au lot atteint. Veuillez refuser les demandes en cours ou retirer des membres au lot.");
+                "Nombre maximum de membre inscrit au lot atteint. Veuillez refuser les demandes en cours ou retirer des membres au lot.");
       }
 
       RequestToJoin newRequestToJoin = new RequestToJoin(memberId, lotName, false);

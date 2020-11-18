@@ -6,6 +6,10 @@ import JardinCollectif.annotations.Initializer;
 import JardinCollectif.repositories.helpers.ColumnHelper;
 import JardinCollectif.repositories.helpers.GenericHelper;
 import JardinCollectif.repositories.helpers.TableHelper;
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import org.bson.Document;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -15,18 +19,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-
-import org.bson.Document;
-
 public abstract class Repository<T> extends GenericHelper<T> {
   protected final Connection connection;
-
-  public MongoCollection<Document> collection;
-
   private final TableHelper tableHelper;
+  public MongoCollection<Document> collection;
 
   public Repository(Connection connection) throws ClassNotFoundException, IFT287Exception {
     this.connection = connection;
@@ -115,7 +111,7 @@ public abstract class Repository<T> extends GenericHelper<T> {
 
     if (constructor == null) {
       throw new IFT287Exception(
-          type.getName() + " should have only one constructor or a constructor with the \"Initializer\" annotation.");
+              type.getName() + " should have only one constructor or a constructor with the \"Initializer\" annotation.");
     }
 
     T instance = null;
@@ -136,7 +132,7 @@ public abstract class Repository<T> extends GenericHelper<T> {
     long modifiedCount = 0;
     try {
       List<ColumnHelper> columns = tableHelper.getColumns().stream().filter(columnHelper -> !columnHelper.isPrimary())
-          .collect(Collectors.toList());
+              .collect(Collectors.toList());
 
       BasicDBObject updateFields = new BasicDBObject();
 

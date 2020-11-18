@@ -6,19 +6,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public abstract class CommandHandler {
-  private final HashMap<String, Method> dispatcher;
-  private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
   static {
     dateFormat.setLenient(false);
   }
+
+  private final HashMap<String, Method> dispatcher;
 
   protected CommandHandler() {
     dispatcher = new HashMap<>();

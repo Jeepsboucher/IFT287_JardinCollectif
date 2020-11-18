@@ -16,7 +16,7 @@ public class LotTransactions {
   private final RequestToJoinRepository requestToJoinRepository;
 
   public LotTransactions(LotRepository lotRepository, IsSowedInRepository isSowedInRepository,
-      RequestToJoinRepository requestToJoinRepository) {
+                         RequestToJoinRepository requestToJoinRepository) {
     this.lotRepository = lotRepository;
     this.isSowedInRepository = isSowedInRepository;
     this.requestToJoinRepository = requestToJoinRepository;

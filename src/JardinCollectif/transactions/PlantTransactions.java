@@ -1,20 +1,12 @@
 package JardinCollectif.transactions;
 
 import JardinCollectif.IFT287Exception;
-import JardinCollectif.model.IsSowedIn;
-import JardinCollectif.model.Lot;
-import JardinCollectif.model.Member;
-import JardinCollectif.model.Plant;
-import JardinCollectif.model.RequestToJoin;
-import JardinCollectif.repositories.IsSowedInRepository;
-import JardinCollectif.repositories.LotRepository;
-import JardinCollectif.repositories.MemberRepository;
-import JardinCollectif.repositories.PlantRepository;
-import JardinCollectif.repositories.RequestToJoinRepository;
+import JardinCollectif.model.*;
+import JardinCollectif.repositories.*;
 
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
-import java.time.Instant;
 import java.util.List;
 
 public class PlantTransactions {
@@ -26,8 +18,8 @@ public class PlantTransactions {
   private final RequestToJoinRepository requestToJoinRepository;
 
   public PlantTransactions(PlantRepository plantRepository, LotRepository lotRepository,
-      MemberRepository memberRepository, IsSowedInRepository isSowedInRepository,
-      RequestToJoinRepository requestToJoinRepository) {
+                           MemberRepository memberRepository, IsSowedInRepository isSowedInRepository,
+                           RequestToJoinRepository requestToJoinRepository) {
     this.plantRepository = plantRepository;
     this.lotRepository = lotRepository;
     this.memberRepository = memberRepository;
@@ -80,7 +72,7 @@ public class PlantTransactions {
   }
 
   public void sowPlantInLot(String plantName, String lotName, long memberId, int quantity, Date plantingDate)
-      throws IFT287Exception {
+          throws IFT287Exception {
     try {
       if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
@@ -151,10 +143,10 @@ public class PlantTransactions {
 
       Plant plant = plantRepository.retrieve(plantName);
       Date plantationDate = new Date(
-          java.util.Date.from(Instant.now().minusSeconds(plant.cultivationTime * 24 * 60 * 60)).getTime());
+              java.util.Date.from(Instant.now().minusSeconds(plant.cultivationTime * 24 * 60 * 60)).getTime());
 
       boolean hasHarvestedSomething = isSowedInRepository.deletePlantsOlderThanWithNameInLot(plantationDate, plantName,
-          lotName) > 0;
+              lotName) > 0;
       if (!hasHarvestedSomething) {
         throw new IFT287Exception("Aucun exemplaire de la plante spécifiée n'est prêt à être récolté.");
       }

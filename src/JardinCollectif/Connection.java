@@ -53,7 +53,7 @@ public class Connection {
       client = new MongoClient();
     } else if (serveur.equals("dinf")) {
       MongoClientURI uri = new MongoClientURI(
-          "mongodb://" + user + ":" + pass + "@bd-info2.dinf.usherbrooke.ca:27017/" + bd + "?ssl=false");
+              "mongodb://" + user + ":" + pass + "@bd-info2.dinf.usherbrooke.ca:27017/" + bd + "?ssl=false");
       client = new MongoClient(uri);
     } else {
       throw new IFT287Exception("Serveur inconnu");
@@ -62,7 +62,7 @@ public class Connection {
     database = client.getDatabase(bd);
 
     System.out
-        .println("Ouverture de la connexion :\n" + "Connecté sur la BD MongoDB " + bd + " avec l'utilisateur " + user);
+            .println("Ouverture de la connexion :\n" + "Connecté sur la BD MongoDB " + bd + " avec l'utilisateur " + user);
   }
 
   /**
