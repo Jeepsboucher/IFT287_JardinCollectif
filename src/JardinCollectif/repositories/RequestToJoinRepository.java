@@ -2,14 +2,19 @@ package JardinCollectif.repositories;
 
 import JardinCollectif.Connection;
 import JardinCollectif.IFT287Exception;
+import JardinCollectif.model.Member;
 import JardinCollectif.model.RequestToJoin;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.mongodb.client.MongoCursor;
 
-import static com.mongodb.client.model.Filters.*;
-
 import org.bson.Document;
+
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Aggregates.*;
 
 public class RequestToJoinRepository extends Repository<RequestToJoin> {
   public RequestToJoinRepository(Connection connection) throws ClassNotFoundException, SQLException, IFT287Exception {
@@ -17,36 +22,30 @@ public class RequestToJoinRepository extends Repository<RequestToJoin> {
   }
 
   public boolean isMemberRegisteredToALot(long memberId) throws SQLException {
-    MongoCursor<Document> isRegisteredCollection = collection.find(eq("memberId", memberId)).iterator();
-    boolean isRegistered = false;
-    try {
-      while (isRegisteredCollection.hasNext()) {
-        isRegistered = true;
-      }
-    } finally {
-      isRegisteredCollection.close();
-    }
-    return isRegistered;
+    return collection.find(eq("memberId", memberId)).first() != null;
   }
 
   public long countMembershipInLot(String lotName) throws SQLException {
-
     return collection.countDocuments(eq("lotName", lotName));
-    // MongoCursor<Document> countCollection = collection.find(eq("lotName",
-    // lotName)).iterator();
-    // collection.find().iterator().
-    // int membershipCount = 0;
-    // try {
-    // while (countCollection.hasNext()) {
-    // membershipCount++;
-    // }
-    // } finally {
-    // countCollection.close();
-    // }
-    // return membershipCount;
   }
 
-  public long deleteRequestToJoinLot(String lotName) {
+  public long deleteRequestsToJoinLot(String lotName) {
     return collection.deleteMany(eq("lotName", lotName)).getDeletedCount();
+  }
+
+  public List<Member> retrieveMembersInLot(String lotName) {
+    MongoCursor<Document> testCollection = collection.aggregate(Arrays.asList(match(eq("requestStatus", true)),
+        match(eq("lotName", lotName)), lookup("Member", "memberId", "memberId", "member"))).iterator();
+
+    List<Member> members = new LinkedList<Member>();
+    try {
+      while (testCollection.hasNext()) {
+        members.add(new Member(testCollection.next()));
+      }
+    } finally {
+      testCollection.close();
+    }
+
+    return members;
   }
 }
