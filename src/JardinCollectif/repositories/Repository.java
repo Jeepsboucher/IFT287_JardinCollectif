@@ -194,15 +194,7 @@ public abstract class Repository<T> extends GenericHelper<T> {
       options.put(idNames.get(i).getName(), id[i]);
     }
 
-    MongoCursor<Document> existCollection = collection.find(options).iterator();
-    boolean exist = false;
-    try {
-      exist = existCollection.hasNext();
-    } finally {
-      existCollection.close();
-    }
-
-    return exist;
+    return collection.find(options).first() != null;
   }
 
   private Document getDocument(T toGet) throws IllegalArgumentException, IllegalAccessException {
