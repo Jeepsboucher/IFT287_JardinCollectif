@@ -7,7 +7,6 @@ import JardinCollectif.repositories.IsSowedInRepository;
 import JardinCollectif.repositories.LotRepository;
 import JardinCollectif.repositories.RequestToJoinRepository;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class LotTransactions {
@@ -23,7 +22,7 @@ public class LotTransactions {
     this.requestToJoinRepository = requestToJoinRepository;
   }
 
-  public void addLot(String lotName, int maxMembercount) throws SQLException, IFT287Exception {
+  public void addLot(String lotName, int maxMembercount) throws IFT287Exception {
     try {
 
       if (lotName == null || lotName.isEmpty()) {
@@ -46,7 +45,7 @@ public class LotTransactions {
     }
   }
 
-  public void removeLot(String lotName) throws SQLException, IFT287Exception {
+  public void removeLot(String lotName) throws IFT287Exception {
     try {
 
       if (lotName == null || lotName.isEmpty()) {
@@ -63,18 +62,18 @@ public class LotTransactions {
       }
 
       requestToJoinRepository.deleteRequestsToJoinLot(lotName);
-      lotRepository.delete(toDelete);
+      lotRepository.delete(lotName);
 
     } catch (Exception e) {
       throw e;
     }
   }
 
-  public List<Lot> getLots() throws SQLException, IFT287Exception {
+  public List<Lot> getLots() throws IFT287Exception {
     return lotRepository.retrieveAll();
   }
 
-  public List<IsSowedIn> getPlantsInLot(String lotName) throws SQLException, IFT287Exception {
+  public List<IsSowedIn> getPlantsInLot(String lotName) throws IFT287Exception {
     if (lotName == null || lotName.isEmpty()) {
       throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
     }

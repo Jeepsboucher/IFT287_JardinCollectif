@@ -5,14 +5,15 @@ import JardinCollectif.model.IsSowedIn;
 import JardinCollectif.model.Lot;
 import JardinCollectif.model.Member;
 import JardinCollectif.model.Plant;
+import JardinCollectif.model.RequestToJoin;
 import JardinCollectif.repositories.IsSowedInRepository;
 import JardinCollectif.repositories.LotRepository;
 import JardinCollectif.repositories.MemberRepository;
 import JardinCollectif.repositories.PlantRepository;
 import JardinCollectif.repositories.RequestToJoinRepository;
 
-import java.sql.Date;
-import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 import java.time.Instant;
 import java.util.List;
 
@@ -34,9 +35,8 @@ public class PlantTransactions {
     this.requestToJoinRepository = requestToJoinRepository;
   }
 
-  public void addPlant(String plantName, int cultivationTime) throws SQLException, IFT287Exception {
+  public void addPlant(String plantName, int cultivationTime) throws IFT287Exception {
     try {
-
       if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante doit avoir un nom.");
       }
@@ -57,9 +57,8 @@ public class PlantTransactions {
     }
   }
 
-  public void removePlant(String plantName) throws SQLException, IFT287Exception {
+  public void removePlant(String plantName) throws IFT287Exception {
     try {
-
       if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
       }
@@ -73,7 +72,7 @@ public class PlantTransactions {
         throw new IFT287Exception("La plante spécifé est encore en culture.");
       }
 
-      plantRepository.delete(toDelete);
+      plantRepository.delete(plantName);
 
     } catch (Exception e) {
       throw e;
@@ -81,9 +80,8 @@ public class PlantTransactions {
   }
 
   public void sowPlantInLot(String plantName, String lotName, long memberId, int quantity, Date plantingDate)
-      throws SQLException, IFT287Exception {
+      throws IFT287Exception {
     try {
-
       if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante spécifié doit avoir un nom.");
       }
@@ -109,23 +107,21 @@ public class PlantTransactions {
       if (quantity < 1) {
         throw new IFT287Exception("La quantité doit être d'au moins un.");
       }
-      if (!requestToJoinRepository.exists(memberId, lotName)
-          || !requestToJoinRepository.retrieve(memberId, lotName).requestStatus) {
-        throw new IFT287Exception("Le membre spécifié n'a pa accès au lot spécifié.");
+
+      RequestToJoin request = requestToJoinRepository.retrieve(memberId, lotName);
+      if (request == null || !request.requestStatus) {
+        throw new IFT287Exception("Le membre spécifié n'a pas accès au lot spécifié.");
       }
 
-      // Id will be ignored since it's auto-generated.
-      IsSowedIn newIsSowedIn = new IsSowedIn(-1, quantity, plantingDate, memberId, lotName, plantName);
+      IsSowedIn newIsSowedIn = new IsSowedIn(quantity, plantingDate, memberId, lotName, plantName);
       isSowedInRepository.create(newIsSowedIn);
-
     } catch (Exception e) {
       throw e;
     }
   }
 
-  public void harvestPlant(String plantName, String lotName, long memberId) throws SQLException, IFT287Exception {
+  public void harvestPlant(String plantName, String lotName, long memberId) throws IFT287Exception {
     try {
-
       if (plantName == null || plantName.isEmpty()) {
         throw new IFT287Exception("La plante doit avoir un nom.");
       }
@@ -148,9 +144,9 @@ public class PlantTransactions {
         throw new IFT287Exception("Le membre spécifié n'existe pas.");
       }
 
-      if (!requestToJoinRepository.exists(memberId, lotName)
-          || !requestToJoinRepository.retrieve(memberId, lotName).requestStatus) {
-        throw new IFT287Exception("Le membre spécifié n'a pa accès au lot spécifié.");
+      RequestToJoin request = requestToJoinRepository.retrieve(memberId, lotName);
+      if (request == null || !request.requestStatus) {
+        throw new IFT287Exception("Le membre spécifié n'a pas accès au lot spécifié.");
       }
 
       Plant plant = plantRepository.retrieve(plantName);
@@ -162,17 +158,16 @@ public class PlantTransactions {
       if (!hasHarvestedSomething) {
         throw new IFT287Exception("Aucun exemplaire de la plante spécifiée n'est prêt à être récolté.");
       }
-
     } catch (Exception e) {
       throw e;
     }
   }
 
-  public List<Plant> getPlants() throws SQLException, IFT287Exception {
+  public List<Plant> getPlants() throws IFT287Exception {
     return plantRepository.retrieveAll();
   }
 
-  public int getQuantitySowed(String plantName) throws SQLException, IFT287Exception {
+  public long getQuantitySowed(String plantName) throws IFT287Exception {
     if (plantName == null || plantName.isEmpty()) {
       throw new IFT287Exception("La plante spécifité doit avoir un nom");
     }
@@ -184,7 +179,7 @@ public class PlantTransactions {
     return isSowedInRepository.getQuantitySowed(plantName);
   }
 
-  public List<IsSowedIn> getPlantsInLot(String lotName) throws SQLException, IFT287Exception {
+  public List<IsSowedIn> getPlantsInLot(String lotName) throws IFT287Exception {
     if (lotName == null || lotName.isEmpty()) {
       throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
     }
@@ -196,7 +191,7 @@ public class PlantTransactions {
     return isSowedInRepository.retrieveFromLot(lotName);
   }
 
-  public Date getHarvestDate(IsSowedIn isSowedIn) throws IFT287Exception, SQLException {
+  public Date getHarvestDate(IsSowedIn isSowedIn) throws IFT287Exception {
     if (isSowedIn.plantName == null || isSowedIn.plantName.isEmpty()) {
       throw new IFT287Exception("La plante spécifié doit avoir un nom.");
     }
@@ -206,7 +201,11 @@ public class PlantTransactions {
     }
 
     Plant plant = plantRepository.retrieve(isSowedIn.plantName);
-    Date harvestDate = Date.valueOf(isSowedIn.plantingDate.toLocalDate().plusDays(plant.cultivationTime));
+
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(isSowedIn.plantingDate);
+    calendar.add(Calendar.DATE, plant.cultivationTime); // This is why java isn't the best programming langage.
+    Date harvestDate = calendar.getTime();
 
     return harvestDate;
   }

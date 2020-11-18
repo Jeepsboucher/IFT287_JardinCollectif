@@ -4,8 +4,7 @@ import JardinCollectif.Connection;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.IsSowedIn;
 
-import java.sql.Date;
-import java.sql.SQLException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,7 +15,7 @@ import static com.mongodb.client.model.Filters.*;
 import org.bson.Document;
 
 public class IsSowedInRepository extends Repository<IsSowedIn> {
-  public IsSowedInRepository(Connection connection) throws ClassNotFoundException, SQLException, IFT287Exception {
+  public IsSowedInRepository(Connection connection) throws ClassNotFoundException, IFT287Exception {
     super(connection);
   }
 
@@ -47,14 +46,14 @@ public class IsSowedInRepository extends Repository<IsSowedIn> {
   }
 
   public long deletePlantsOlderThanWithNameInLot(Date plantingDate, String plantName, String lotName)
-      throws SQLException, IFT287Exception {
+      throws IFT287Exception {
     return collection
-        .deleteMany(and(eq("plantName", plantName), and(eq("lotName", lotName), eq("plantingDate", plantingDate))))
+        .deleteMany(and(eq("plantName", plantName), and(eq("lotName", lotName), lte("plantingDate", plantingDate))))
         .getDeletedCount();
   }
 
-  public int getQuantitySowed(String plantName) throws IFT287Exception {
-    int quantitySowed = 0;
+  public long getQuantitySowed(String plantName) throws IFT287Exception {
+    long quantitySowed = 0;
     MongoCursor<Document> plantCollection = collection.find(eq("plantName", plantName)).iterator();
     try {
       while (plantCollection.hasNext()) {

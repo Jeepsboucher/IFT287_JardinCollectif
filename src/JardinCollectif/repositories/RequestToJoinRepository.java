@@ -4,7 +4,6 @@ import JardinCollectif.Connection;
 import JardinCollectif.IFT287Exception;
 import JardinCollectif.model.Member;
 import JardinCollectif.model.RequestToJoin;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,15 +17,15 @@ import static com.mongodb.client.model.Aggregates.*;
 import static com.mongodb.client.model.Projections.*;
 
 public class RequestToJoinRepository extends Repository<RequestToJoin> {
-  public RequestToJoinRepository(Connection connection) throws ClassNotFoundException, SQLException, IFT287Exception {
+  public RequestToJoinRepository(Connection connection) throws ClassNotFoundException, IFT287Exception {
     super(connection);
   }
 
-  public boolean isMemberRegisteredToALot(long memberId) throws SQLException {
+  public boolean isMemberRegisteredToALot(long memberId) {
     return collection.find(eq("memberId", memberId)).first() != null;
   }
 
-  public long countMembershipInLot(String lotName) throws SQLException {
+  public long countMembershipInLot(String lotName) {
     return collection.countDocuments(eq("lotName", lotName));
   }
 
@@ -35,16 +34,16 @@ public class RequestToJoinRepository extends Repository<RequestToJoin> {
   }
 
   public List<Member> retrieveMembersInLot(String lotName) {
-    MongoCursor<Document> testCollection = collection.aggregate(Arrays.asList(match(eq("requestStatus", true)),
+    MongoCursor<Document> memberCollection = collection.aggregate(Arrays.asList(match(eq("requestStatus", true)),
         match(eq("lotName", lotName)), lookup("Member", "memberId", "memberId", "member"), unwind("$member"), replaceRoot("$member"))).iterator();
 
     List<Member> members = new LinkedList<Member>();
     try {
-      while (testCollection.hasNext()) {
-        members.add(new Member(testCollection.next()));
+      while (memberCollection.hasNext()) {
+        members.add(new Member(memberCollection.next()));
       }
     } finally {
-      testCollection.close();
+      memberCollection.close();
     }
 
     return members;

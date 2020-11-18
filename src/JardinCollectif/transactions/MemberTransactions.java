@@ -8,7 +8,6 @@ import JardinCollectif.repositories.LotRepository;
 import JardinCollectif.repositories.MemberRepository;
 import JardinCollectif.repositories.RequestToJoinRepository;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class MemberTransactions {
@@ -25,7 +24,7 @@ public class MemberTransactions {
   }
 
   public void addMember(long memberId, String firstName, String lastName, String password)
-      throws SQLException, IFT287Exception {
+      throws IFT287Exception {
     try {
 
       if (firstName == null || firstName.isEmpty()) {
@@ -55,7 +54,7 @@ public class MemberTransactions {
     }
   }
 
-  public void removeMember(long memberId) throws SQLException, IFT287Exception {
+  public void removeMember(long memberId) throws IFT287Exception {
     try {
 
       Member toDelete = memberRepository.retrieve(memberId);
@@ -67,13 +66,13 @@ public class MemberTransactions {
         throw new IFT287Exception("Le membre spécifié est le dernier membre d'un lot.");
       }
 
-      memberRepository.delete(toDelete);
+      memberRepository.delete(memberId);
     } catch (Exception e) {
       throw e;
     }
   }
 
-  public void promoteToAdmin(long memberId) throws SQLException, IFT287Exception {
+  public void promoteToAdmin(long memberId) throws IFT287Exception {
     try {
 
       if (!memberRepository.exists(memberId)) {
@@ -93,7 +92,7 @@ public class MemberTransactions {
     }
   }
 
-  public void requestToJoinLot(long memberId, String lotName) throws SQLException, IFT287Exception {
+  public void requestToJoinLot(long memberId, String lotName) throws IFT287Exception {
     try {
 
       if (lotName == null || lotName.isEmpty()) {
@@ -126,7 +125,7 @@ public class MemberTransactions {
     }
   }
 
-  public void acceptRequestToJoinLot(String lotName, long memberId) throws SQLException, IFT287Exception {
+  public void acceptRequestToJoinLot(String lotName, long memberId) throws IFT287Exception {
     try {
 
       if (lotName == null || lotName.isEmpty()) {
@@ -155,7 +154,7 @@ public class MemberTransactions {
     }
   }
 
-  public void denyRequestToJoinLot(String lotName, long memberId) throws SQLException, IFT287Exception {
+  public void denyRequestToJoinLot(String lotName, long memberId) throws IFT287Exception {
     try {
 
       if (lotName == null || lotName.isEmpty()) {
@@ -183,11 +182,11 @@ public class MemberTransactions {
     }
   }
 
-  public List<Member> getMembers() throws SQLException, IFT287Exception {
+  public List<Member> getMembers() throws IFT287Exception {
     return memberRepository.retrieveAll();
   }
 
-  public List<Member> getMembersInLot(String lotName) throws SQLException, IFT287Exception {
+  public List<Member> getMembersInLot(String lotName) throws IFT287Exception {
     if (lotName == null || lotName.isEmpty()) {
       throw new IFT287Exception("Le lot spécifié doit avoir un nom.");
     }
