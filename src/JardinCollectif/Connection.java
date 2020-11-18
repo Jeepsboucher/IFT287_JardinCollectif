@@ -1,6 +1,5 @@
 package JardinCollectif;
 
-import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,7 +44,7 @@ public class Connection {
    *                données.
    * @param pass    Le mot de passe associé à l'utilisateur.
    */
-  public Connection(String serveur, String bd, String user, String pass) throws IFT287Exception, SQLException {
+  public Connection(String serveur, String bd, String user, String pass) throws IFT287Exception {
     Map<String, String> properties = new HashMap<String, String>();
     properties.put("javax.persistence.jdbc.user", user);
     properties.put("javax.persistence.jdbc.password", pass);
@@ -69,7 +68,7 @@ public class Connection {
   /**
    * Fermeture d'une connexion
    */
-  public void close() throws SQLException {
+  public void close() {
     client.close();
     System.out.println("Connexion fermée");
   }
