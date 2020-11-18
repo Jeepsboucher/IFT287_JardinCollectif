@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 
 import static com.mongodb.client.model.Filters.*;

@@ -37,7 +37,8 @@ public class JardinCollectifCommandHandler extends CommandHandler {
 
     memberTransactions = new MemberTransactions(memberRepository, lotRepository, requestToJoinRepository);
     lotTransactions = new LotTransactions(lotRepository, isSowedInRepository, requestToJoinRepository);
-    plantTransactions = new PlantTransactions(plantRepository, lotRepository, memberRepository, isSowedInRepository);
+    plantTransactions = new PlantTransactions(plantRepository, lotRepository, memberRepository, isSowedInRepository,
+        requestToJoinRepository);
   }
 
   @Command("inscrireMembre")

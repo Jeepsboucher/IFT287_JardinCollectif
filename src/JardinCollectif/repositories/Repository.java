@@ -114,6 +114,7 @@ public abstract class Repository<T> extends GenericHelper<T> {
       throw new IFT287Exception(
           type.getName() + " should have only one constructor or a constructor with the \"Initializer\" annotation.");
     }
+
     T instance = null;
     try {
       instance = (T) constructor.newInstance(doc);
@@ -204,7 +205,7 @@ public abstract class Repository<T> extends GenericHelper<T> {
     return exist;
   }
 
-  public Document getDocument(T toGet) throws IllegalArgumentException, IllegalAccessException {
+  private Document getDocument(T toGet) throws IllegalArgumentException, IllegalAccessException {
     List<ColumnHelper> columns = tableHelper.getColumns();
     Document doc = new Document();
 
