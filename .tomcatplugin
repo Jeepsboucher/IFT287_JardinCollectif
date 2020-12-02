@@ -9,5 +9,5 @@
     <warLocation></warLocation>
     <extraInfo></extraInfo>
     <mavenClasspath>false</mavenClasspath>
-    <webPath>/TP5_JardinCollectif</webPath>
+    <webPath>/IFT287_JardinCollectif</webPath>
 </tomcatProjectProperties>
