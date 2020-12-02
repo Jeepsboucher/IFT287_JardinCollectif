@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN" "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
 <web-app id="test-biblio">
-  <display-name>Jardin Collectif, MA BOIIIIIII</display-name>
-  <context-param>
-    <param-name>exempleParam1</param-name>
-    <param-value>valeurDeExempleParam1</param-value>
-  </context-param>
-  <context-param>
-    <param-name>exempleParam2</param-name>
-    <param-value>valeurDeExempleParam2</param-value>
-  </context-param>
+  <display-name>Jardin Collectif</display-name>
   <servlet>
     <servlet-name>Login</servlet-name>
     <servlet-class>JardinCollectifServlet.Login</servlet-class>
