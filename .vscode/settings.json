@@ -1,9 +1,0 @@
-{
-    "java.project.referencedLibraries": {
-        "include": [
-            "lib/mongo.jar",
-            "lib/mongo-javadoc.jar",
-            "lib/**/*.jar"
-        ],
-    }
-}
